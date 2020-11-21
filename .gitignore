@@ -1,12 +1,17 @@
 # Compiled class file
 *.class
-
+.classpath
+.project
+.springBeans
 # Log file
 *.log
 
 # BlueJ files
 *.ctxt
-
+#Target
+target/
+.metadata/
+.settings/
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
