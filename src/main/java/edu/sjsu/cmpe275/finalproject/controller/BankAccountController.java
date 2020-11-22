@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.finalproject.model.Address;
 import edu.sjsu.cmpe275.finalproject.model.BankAccount;
+import edu.sjsu.cmpe275.finalproject.model.User;
 import edu.sjsu.cmpe275.finalproject.services.BankAccountService;
 
 @CrossOrigin(origins = "*")
@@ -47,7 +48,7 @@ public class BankAccountController {
 	@PostMapping("")
 	public ResponseEntity<BankAccount> createBankAccount(@RequestParam(required = true, name = "bankName") String bankName,
 			@RequestParam(required = true, name = "country") String country,
-			@RequestParam(required = true, name = "ownerName") String ownerName,
+			@RequestParam(required = true, name = "ownerName") User ownerName,
 			@RequestParam(required = false, name = "currency") String currency,
 			@RequestParam(required = false, name = "sendingOrReceiving") String sendingOrReceiving ,
 			@RequestParam(required = false, name = "street") String street,

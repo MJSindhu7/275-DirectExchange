@@ -16,5 +16,11 @@ CREATE TABLE bankaccount (
 	PRIMARY KEY (account_number)
 );
 
+CREATE TABLE user (
+	user_name VARCHAR(255) NOT NULL UNIQUE,
+	nick_name VARCHAR(255) NOT NULL UNIQUE,
+	PRIMARY KEY (user_name)
+);
+
 
 
