@@ -2,20 +2,7 @@ drop database finalproject;
 create database finalproject;
 use finalproject;
 
-CREATE TABLE bankaccount (
-	account_number BIGINT NOT NULL AUTO_INCREMENT,
-	bank_name VARCHAR(255) NOT NULL,
-	country VARCHAR(255) NOT NULL,
-	owner_name VARCHAR(255) NOT NULL,
-	currency VARCHAR(255),
-	sending_or_receiving VARCHAR(255),
-	street VARCHAR(255),
-	city VARCHAR(255),
-	state VARCHAR(255),
-	zip VARCHAR(255),
-	PRIMARY KEY (account_number)
-);
-
+CREATE TABLE bankaccount ( bank_name VARCHAR(255) NOT NULL, country VARCHAR(255) NOT NULL, account_number BIGINT NOT NULL, owner_name VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, currency VARCHAR(255), sending_or_receiving VARCHAR(255), PRIMARY KEY (account_number) );
 CREATE TABLE user (
 	user_name VARCHAR(255) NOT NULL UNIQUE,
 	nick_name VARCHAR(255) NOT NULL UNIQUE,
