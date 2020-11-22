@@ -16,11 +16,12 @@ public class BankAccount {
 
 	}
 
-	public BankAccount(String bankName, String country, Address address, String ownerName, String currency,
-			String sendingOrReceivings) {
+	public BankAccount(String bankName, String country, long accountNumber, String ownerName, String address,
+			String currency, String sendingOrReceivings) {
 		super();
 		this.bankName = bankName;
 		this.country = country;
+		this.accountNumber = accountNumber;
 		this.ownerName = ownerName;
 		this.currency = currency;
 		this.sendingOrReceiving = sendingOrReceivings;
@@ -28,30 +29,26 @@ public class BankAccount {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "account_number")
 	private long accountNumber;
 
-	/*public User getOwnerName() {
-		return ownerName;
-	}
-
-	public void setOwnerName(User ownerName) {
-		this.ownerName = ownerName;
-	}*/
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	@Column
+	@Column(name = "bank_name")
 	private String bankName;
 
-	@Column
+	@Column(name = "country")
 	private String country;
+
+	@Column(name = "owner_name")
+	private String ownerName;
+
+	@Column(name = "currency")
+	private String currency;
+
+	@Column(name = "sending_or_receiving")
+	private String sendingOrReceiving;
+
+	@Column(name = "address")
+	private String address;
 
 	public long getAccountNumber() {
 		return accountNumber;
@@ -77,7 +74,7 @@ public class BankAccount {
 		this.country = country;
 	}
 
-	/*public String getOwnerName() {
+	public String getOwnerName() {
 		return ownerName;
 	}
 
@@ -85,14 +82,6 @@ public class BankAccount {
 		this.ownerName = ownerName;
 	}
 
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address ownerAddress) {
-		this.address = ownerAddress;
-	}
-*/
 	public String getCurrency() {
 		return currency;
 	}
@@ -109,21 +98,13 @@ public class BankAccount {
 		this.sendingOrReceiving = sendingOrReceiving;
 	}
 
-	@Column
-	private String ownerName;
-	
-	/*@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "name")
-	private User ownerName;*/
+	public String getAddress() {
+		return address;
+	}
 
-	@Column
-	private String currency;
-
-	@Column
-	private String sendingOrReceiving;
-
-	@Embedded
-	private Address address;
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
 	@Override
 	public String toString() {
