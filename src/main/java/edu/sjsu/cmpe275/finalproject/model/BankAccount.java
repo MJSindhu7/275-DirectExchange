@@ -3,12 +3,9 @@ package edu.sjsu.cmpe275.finalproject.model;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,7 +16,7 @@ public class BankAccount {
 
 	}
 
-	public BankAccount(String bankName, String country, Address address, User ownerName, String currency,
+	public BankAccount(String bankName, String country, Address address, String ownerName, String currency,
 			String sendingOrReceivings) {
 		super();
 		this.bankName = bankName;
@@ -34,13 +31,13 @@ public class BankAccount {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long accountNumber;
 
-	public User getOwnerName() {
+	/*public User getOwnerName() {
 		return ownerName;
 	}
 
 	public void setOwnerName(User ownerName) {
 		this.ownerName = ownerName;
-	}
+	}*/
 
 	public Address getAddress() {
 		return address;
@@ -112,12 +109,12 @@ public class BankAccount {
 		this.sendingOrReceiving = sendingOrReceiving;
 	}
 
-	/*@Column
-	private String ownerName;*/
+	@Column
+	private String ownerName;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "userName")
-	private User ownerName;
+	/*@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "name")
+	private User ownerName;*/
 
 	@Column
 	private String currency;
