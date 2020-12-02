@@ -1,44 +1,63 @@
-/*
- * package edu.sjsu.cmpe275.finalproject.model;
- * 
- * import javax.persistence.Column; import javax.persistence.Entity; import
- * javax.persistence.GeneratedValue; import javax.persistence.GenerationType;
- * import javax.persistence.Id; import javax.persistence.Table;
- * 
- * @Entity
- * 
- * @Table(name = "user") public class User { public User() {
- * 
- * }
- * 
- * public User(String userName, String nickName) { this.userName = userName;
- * this.nickName = nickName; }
- * 
- * public long getId() { return id; }
- * 
- * public void setId(long id) { this.id = id; }
- * 
- * public String getUserName() { return userName; }
- * 
- * public void setUserName(String userName) { this.userName = userName; }
- * 
- * public String getNickName() { return nickName; }
- * 
- * public void setNickName(String nickName) { this.nickName = nickName; }
- * 
- * @Id
- * 
- * @GeneratedValue(strategy = GenerationType.AUTO) private long id;
- * 
- * //@Id
- * 
- * @Column private String userName;
- * 
- * public String getName() { return name; }
- * 
- * public void setName(String name) { this.name = name; }
- * 
- * @Column private String name;
- * 
- * @Column private String nickName; }
- */
+package edu.sjsu.cmpe275.finalproject.model;
+
+import java.util.List;
+
+import javax.persistence.Column; 
+import javax.persistence.Entity; 
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "user") 
+public class User { 
+	
+	public User() {
+	}
+
+	public User(String userName, String nickName) { 
+		this.userName  = userName;
+		this.nickName = nickName; 
+	}
+
+	@Id
+	@Column(name = "user_name") 
+	private String userName ;
+	
+	@Column(name = "nick_name") 
+	private String nickName ;
+	
+	@Column(name = "rating") 
+	private int rating = 0;
+
+	@OneToMany(mappedBy = "user")
+	private List<BankAccount> accounts;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Offers> offers;
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	} 
+}
