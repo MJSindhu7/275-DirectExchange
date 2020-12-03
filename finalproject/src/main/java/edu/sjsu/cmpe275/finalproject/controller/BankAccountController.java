@@ -79,10 +79,7 @@ public class BankAccountController {
 		 * http://localhost:9091/bank?bankName=HSBC&country=India&ownerName=Sindhu&currency=INR&sendingOrReceiving=Sending&street=Ram
 		 * Nagar&city=Vja&state=AP&zip=234344
 		 */
-//		User user = null;
 		try {
-//			user = userService.getAccount(bankaccount.getUserName());
-//			bankaccount.setUser(user);
 			BankAccount _bankAccount = bankAccountService.saveBankAccount(bankaccount);
 			return new ResponseEntity<BankAccount>(_bankAccount, HttpStatus.OK);
 		} catch (Exception e) {

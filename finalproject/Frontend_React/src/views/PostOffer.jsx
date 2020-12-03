@@ -17,22 +17,19 @@ class PostOffer extends Component {
     this.state = {
       // step 2
       id: this.props.match.params.id,
-      nickName:'pragati',
-      userName: 'pragati.shinde@gmail.com',
+      userName: '',
       sourceCountry: '',
-      sourceCurrancy: '',
+      sourceCurrency: '',
       remitAmount: '',
       destinationCountry: '',
-      destinationCurrancy: '',
+      destinationCurrency: '',
       exchangeRate: '',
       expirationDate: '',
       counteroffers: true,
       newRemitAmount: 0.00,
       splitExchange: true,
       splitExchangeParties: '',
-      offerStatus:''
-
-
+      offerStatus:'',
     }
   }
 
@@ -43,19 +40,19 @@ class PostOffer extends Component {
     e.preventDefault();
     let offer = {
       userName: this.state.userName,
-      nickName: this.state.nickName,
       sourceCountry: this.state.sourceCountry,
-      sourceCurrancy: this.state.sourceCurrancy,
+      sourceCurrency: this.state.sourceCurrency,
       remitAmount: this.state.remitAmount,
       destinationCountry: this.state.destinationCountry,
-      destinationCurrancy: this.state.destinationCurrancy,
+      destinationCurrency: this.state.destinationCurrency,
       exchangeRate: this.state.exchangeRate,
       expirationDate: this.state.expirationDate,
       counteroffers: this.state.counteroffers,
       newRemitAmount: this.state.newRemitAmount,
       splitExchange: this.state.splitExchange,
       splitExchangeParties: this.state.splitExchangeParties,
-      offerStatus:"Open"
+      offerStatus:"Open", 
+      user:{userName: this.state.userName}
     }
 
     console.log('offer => ' + JSON.stringify(offer));
@@ -91,12 +88,12 @@ class PostOffer extends Component {
                           onChange: e => this.setState({ sourceCountry: e.target.value })
                         },
                         {
-                          label: "Source Currancy",
+                          label: "Source Currency",
                           type: "email",
                           bsClass: "form-control",
-                          placeholder: "Source Currancy",
-                          value: this.state.sourceCurrancy,
-                          onChange: e => this.setState({ sourceCurrancy: e.target.value })
+                          placeholder: "Source Currency",
+                          value: this.state.sourceCurrency,
+                          onChange: e => this.setState({ sourceCurrency: e.target.value })
                         }
                       ]}
                     />
@@ -112,12 +109,12 @@ class PostOffer extends Component {
                           onChange: e => this.setState({ destinationCountry: e.target.value })
                         },
                         {
-                          label: "Destination Currancy",
+                          label: "Destination Currency",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Destination Currancy",
-                          value: this.state.destinationCurrancy,
-                          onChange: e => this.setState({ destinationCurrancy: e.target.value })
+                          placeholder: "Destination Currency",
+                          value: this.state.destinationCurrency,
+                          onChange: e => this.setState({ destinationCurrency: e.target.value })
                         }
                       ]}
 
@@ -184,6 +181,21 @@ class PostOffer extends Component {
 
                       ]}
                     />
+
+                    <FormInputs
+                      ncols={["col-md-4"]}
+                      properties={[
+                          {
+													label: "User Name",
+													type: "text",
+													bsClass: "form-control",
+													placeholder: "User Name",
+													value: this.state.userName,
+													onChange: e => this.setState({ userName: e.target.value })
+												}	
+                      ]}
+                    />
+
 
                     <Button bsStyle="info" pullRight fill type="submit" onClick={this.saveExchangeOffer}>
                       Post Offer

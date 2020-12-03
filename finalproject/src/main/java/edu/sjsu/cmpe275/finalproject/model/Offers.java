@@ -17,7 +17,11 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "offers")
 public class Offers {
-
+	
+	public Offers() {
+		
+	}
+	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
@@ -25,9 +29,6 @@ public class Offers {
 	@JoinColumn(name ="user_name ")
 	private User user;
 	
-	@Column(name = "nick_name")
-	private String nickName;
-
 	@Column(name = "source_country")
 	private String sourceCountry;
 
@@ -40,9 +41,8 @@ public class Offers {
 	@Column(name = "destination_country")
 	private String destinationCountry;
 
-	@Column(name = "destination_currancy")
-	private String destinationCurrancy;
-
+	@Column(name = "destination_currency")
+	private String destinationCurrency;
 
 	@Column(name = "exchange_rate")
 	private float exchangeRate;
@@ -68,9 +68,6 @@ public class Offers {
 	@Column(name = "split_exchange_party_2")
 	private String splitExchangeParty2;
 	
-	@Column(name = "user_rating")
-	private String userRating;
-	
 	@Column(name = "offer_status")
 	private String offerStatus;
 
@@ -88,14 +85,6 @@ public class Offers {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
 	}
 
 	public String getSourceCountry() {
@@ -130,12 +119,12 @@ public class Offers {
 		this.destinationCountry = destinationCountry;
 	}
 
-	public String getDestinationCurrancy() {
-		return destinationCurrancy;
+	public String getDestinationCurrency() {
+		return destinationCurrency;
 	}
 
-	public void setDestinationCurrancy(String destinationCurrancy) {
-		this.destinationCurrancy = destinationCurrancy;
+	public void setDestinationCurrancy(String destinationCurrency) {
+		this.destinationCurrency = destinationCurrency;
 	}
 
 	public float getExchangeRate() {
@@ -194,14 +183,6 @@ public class Offers {
 		this.splitExchangeParty2 = splitExchangeParty2;
 	}
 
-	public String getUserRating() {
-		return userRating;
-	}
-
-	public void setUserRating(String userRating) {
-		this.userRating = userRating;
-	}
-
 	public String getOfferStatus() {
 		return offerStatus;
 	}
@@ -212,12 +193,12 @@ public class Offers {
 
 	@Override
 	public String toString() {
-		return "Offers [id=" + id + ", user=" + user + ", nickName=" + nickName + ", sourceCountry=" + sourceCountry
+		return "Offers [id=" + id + ", user=" + user + ", sourceCountry=" + sourceCountry
 				+ ", sourceCurrency=" + sourceCurrency + ", remitAmount=" + remitAmount + ", destinationCountry="
-				+ destinationCountry + ", destinationCurrancy=" + destinationCurrancy + ", exchangeRate=" + exchangeRate
+				+ destinationCountry + ", destinationCurrency=" + destinationCurrency + ", exchangeRate=" + exchangeRate
 				+ ", expirationDate=" + expirationDate + ", counteroffers=" + counteroffers + ", newRemitAmount="
 				+ newRemitAmount + ", splitExchange=" + splitExchange + ", splitExchangeParty1=" + splitExchangeParty1
-				+ ", splitExchangeParty2=" + splitExchangeParty2 + ", userRating=" + userRating + ", offerStatus="
+				+ ", splitExchangeParty2=" + splitExchangeParty2 + ", offerStatus="
 				+ offerStatus + "]";
 	}
 	

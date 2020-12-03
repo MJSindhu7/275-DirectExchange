@@ -23,7 +23,7 @@ public class BankAccount {
 
 	}
 
-	public BankAccount(String bankName, String country, long accountNumber, String ownerName, String address,
+	public BankAccount(String bankName, String country, Long accountNumber, String ownerName, String address,
 			String currency, String sendingOrReceivings, User user) {
 		super();
 		this.bankName = bankName;
@@ -34,7 +34,6 @@ public class BankAccount {
 		this.sendingOrReceiving = sendingOrReceivings;
 		this.address = address;
 		this.user = user;
-//		this.userName = userName;
 	}
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -48,16 +47,6 @@ public class BankAccount {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-//	private String userName;
-	
-//	public String getUserName() {
-//	return userName;
-//}
-//
-//public void setUserName(String userName) {
-//	this.userName = userName;
-//}
 	
 	@Id
 	@Column(name = "account_number")
