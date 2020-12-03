@@ -3,12 +3,12 @@ import axios from 'axios';
 const DIRECT_EXCHANGE_BANK_URL = "/bank";
 const DIRECT_EXCHANGE_Offers_URL = "/offers";
 
-class CargoService {
+class DirectExchangeService {
 
 
-    addBankAccount(bankacount) {
-        console.log(bankacount)
-        return axios.post(DIRECT_EXCHANGE_BANK_URL + '/bankaccounts/' , bankacount);
+    addBankAccount(bankaccount) {
+        console.log(bankaccount)
+        return axios.post(DIRECT_EXCHANGE_BANK_URL + '/bankaccounts/' , bankaccount);
     }
 
     listBankAccounts() {
@@ -31,4 +31,4 @@ class CargoService {
 
 }
 
-export default new CargoService()
+export default new DirectExchangeService()

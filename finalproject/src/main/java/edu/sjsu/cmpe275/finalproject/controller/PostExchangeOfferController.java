@@ -85,12 +85,12 @@ public class PostExchangeOfferController {
 
 		try {
 
-			Optional<Offers> _offer = postOfferService.findOfferById(offer.getId());
+			Offers _offer = postOfferService.findOfferById(offer.getId());
 			Offers _postOffer = null;
-			if (_offer.isPresent()) {
-				_postOffer = _offer.get();
-				_postOffer = postOfferService.saveExchangeOffer(offer);
-			}
+//			if (_offer.isPresent()) {
+//				_postOffer = _offer.get();
+			_postOffer = postOfferService.saveExchangeOffer(offer);
+//			}
 
 			return new ResponseEntity<Offers>(_postOffer, HttpStatus.OK);
 		} catch (Exception e) {

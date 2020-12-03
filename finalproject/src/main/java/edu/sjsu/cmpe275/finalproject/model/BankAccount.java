@@ -3,21 +3,28 @@ package edu.sjsu.cmpe275.finalproject.model;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import edu.sjsu.cmpe275.finalproject.services.UserService;
 
 @Entity
 @Table(name = "bankaccount")
 public class BankAccount {
-
+	
 	public BankAccount() {
 
 	}
 
-	public BankAccount(String bankName, String country, long accountNumber, String ownerName, String address,
-			String currency, String sendingOrReceivings) {
+	public BankAccount(String bankName, String country, Long accountNumber, String ownerName, String address,
+			String currency, String sendingOrReceivings, User user) {
 		super();
 		this.bankName = bankName;
 		this.country = country;
@@ -26,8 +33,21 @@ public class BankAccount {
 		this.currency = currency;
 		this.sendingOrReceiving = sendingOrReceivings;
 		this.address = address;
+		this.user = user;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name ="user_name ")
+	private User user;
+
+	public User getUser() {
+		return user;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	@Id
 	@Column(name = "account_number")
 	private long accountNumber;

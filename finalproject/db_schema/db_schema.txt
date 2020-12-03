@@ -2,26 +2,43 @@ drop database finalproject;
 create database finalproject;
 use finalproject;
 
-CREATE TABLE bankaccount ( bank_name VARCHAR(255) NOT NULL, country VARCHAR(255) NOT NULL, account_number BIGINT NOT NULL, owner_name VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, currency VARCHAR(255), sending_or_receiving VARCHAR(255), PRIMARY KEY (account_number) );
 CREATE TABLE user (
-	user_name VARCHAR(255) NOT NULL UNIQUE,
-	nick_name VARCHAR(255) NOT NULL UNIQUE,
-	PRIMARY KEY (user_name)
-);
+		user_name VARCHAR(255) NOT NULL UNIQUE,
+		nick_name VARCHAR(255) NOT NULL UNIQUE,
+		rating BIGINT NOT NULL,
+		PRIMARY KEY (user_name)
+		);
 
-CREATE TABLE
+CREATE TABLE bankaccount ( 
+		bank_name VARCHAR(255) NOT NULL, 
+		user_name VARCHAR(255) NOT NULL, 
+		country VARCHAR(255) NOT NULL, 
+		account_number BIGINT NOT NULL, 
+		owner_name VARCHAR(255) NOT NULL, 
+		address VARCHAR(255) NOT NULL, 
+		currency VARCHAR(255), 
+		sending_or_receiving VARCHAR(255), 
+		PRIMARY KEY (account_number) 
+		);
 
-offers (
-
-	id int auto_increment,
-	
-	user_name VARCHAR(255) NOT NULL, nick_name VARCHAR(255) NOT NULL, source_country VARCHAR(255) NOT NULL, source_currancy VARCHAR(255) NOT NULL,remit_amount VARCHAR(255) NOT NULL,
-
-	destination_country VARCHAR(255) NOT NULL, destination_currancy VARCHAR(255) NOT NULL, exchange_rate DECIMAL(6,2) NOT NULL,
-
-	expiration_date DATE NOT NULL, counter_offers BOOLEAN NOT NULL DEFAULT 1, new_remit_amount BIGINT, split_exchange BOOLEAN NOT NULL DEFAULT 1, split_exchange_parties VARCHAR(255), user_rating BIGINT, offer_status VARCHAR(255),
-
-	PRIMARY KEY (id) );
+CREATE TABLE offers (
+		id BIGINT NOT NULL AUTO_INCREMENT,
+		user_name VARCHAR(255) NOT NULL, 
+		source_country VARCHAR(255) NOT NULL, 
+		source_currency VARCHAR(255) NOT NULL,
+		remit_amount BIGINT NOT NULL,
+		destination_country VARCHAR(255) NOT NULL, 
+		destination_currency VARCHAR(255) NOT NULL, 
+		exchange_rate DECIMAL(6,2) NOT NULL,
+		expiration_date DATE NOT NULL,
+		counter_offers BOOLEAN NOT NULL DEFAULT 1,
+		split_exchange BOOLEAN NOT NULL DEFAULT 1, 
+		new_remit_amount BIGINT, 
+		split_exchange_party_1 VARCHAR(255),
+		split_exchange_party_2 VARCHAR(255), 
+		offer_status VARCHAR(255) NOT NULL,
+		PRIMARY KEY (id) 
+		);
 
 
 

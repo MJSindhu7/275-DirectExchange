@@ -1,5 +1,4 @@
 package edu.sjsu.cmpe275.finalproject.services;
-
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -27,10 +26,10 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-//	public User getAccount(Long userName) throws NoResultException { 
-//  userRepository.findById(userName).get(); }
-//
-//	public void deleteById(Long accountNumber) {
-//		userRepository.deleteById(accountNumber);
-//	}
+  public User getAccount(String userName) throws NoResultException {
+		return userRepository.findById(userName).get(); }
+
+	public void deleteById(String accountNumber) {
+		userRepository.deleteById(accountNumber);
+	}
 }
