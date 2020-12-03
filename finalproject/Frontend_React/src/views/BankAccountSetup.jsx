@@ -36,7 +36,7 @@ class BankAccountSetup extends Component {
 		e.preventDefault();
 		let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber,
 			 ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, 
-			 sendingOrReceiving: this.state.sendingOrReceiving, userName: this.state.userName };
+			 sendingOrReceiving: this.state.sendingOrReceiving, user:{userName: this.state.userName}};
 		console.log('bankaccount => ' + JSON.stringify(bankaccount));
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {

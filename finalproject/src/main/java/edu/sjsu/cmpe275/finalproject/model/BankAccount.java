@@ -24,7 +24,7 @@ public class BankAccount {
 	}
 
 	public BankAccount(String bankName, String country, long accountNumber, String ownerName, String address,
-			String currency, String sendingOrReceivings, String userName) {
+			String currency, String sendingOrReceivings, User user) {
 		super();
 		this.bankName = bankName;
 		this.country = country;
@@ -33,12 +33,32 @@ public class BankAccount {
 		this.currency = currency;
 		this.sendingOrReceiving = sendingOrReceivings;
 		this.address = address;
+		this.user = user;
+//		this.userName = userName;
 	}
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name ="user_name ")
 	private User user;
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+//	private String userName;
+	
+//	public String getUserName() {
+//	return userName;
+//}
+//
+//public void setUserName(String userName) {
+//	this.userName = userName;
+//}
+	
 	@Id
 	@Column(name = "account_number")
 	private long accountNumber;

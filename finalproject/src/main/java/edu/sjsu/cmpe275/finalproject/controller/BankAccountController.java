@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.finalproject.model.BankAccount;
+import edu.sjsu.cmpe275.finalproject.model.User;
 import edu.sjsu.cmpe275.finalproject.services.BankAccountService;
+import edu.sjsu.cmpe275.finalproject.services.UserService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,6 +27,9 @@ public class BankAccountController {
 
 	@Autowired
 	BankAccountService bankAccountService;
+	
+	@Autowired
+	UserService userService;
 
 	@GetMapping("/{accountNumber}")
 	public ResponseEntity<BankAccount> getAccountByID(
@@ -74,9 +79,10 @@ public class BankAccountController {
 		 * http://localhost:9091/bank?bankName=HSBC&country=India&ownerName=Sindhu&currency=INR&sendingOrReceiving=Sending&street=Ram
 		 * Nagar&city=Vja&state=AP&zip=234344
 		 */
-
+//		User user = null;
 		try {
-
+//			user = userService.getAccount(bankaccount.getUserName());
+//			bankaccount.setUser(user);
 			BankAccount _bankAccount = bankAccountService.saveBankAccount(bankaccount);
 			return new ResponseEntity<BankAccount>(_bankAccount, HttpStatus.OK);
 		} catch (Exception e) {

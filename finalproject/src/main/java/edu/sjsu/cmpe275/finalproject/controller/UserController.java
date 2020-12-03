@@ -30,7 +30,8 @@ public class UserController {
 				User _user = userService.saveUser(user); 
 				return new ResponseEntity<User>(_user, HttpStatus.OK); } 
 			catch (Exception e) {
-				System.err.println(e); return new ResponseEntity<>(null,
+				System.err.println(e); 
+				return new ResponseEntity<>(null,
 				HttpStatus.BAD_REQUEST); 
 				}
 		}
