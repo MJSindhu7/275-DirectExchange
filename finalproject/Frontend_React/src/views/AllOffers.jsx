@@ -4,7 +4,7 @@ import Card from "components/Card/Card.jsx";
 import DirectExchangeService from '../services/DirectExchangeService';
 import Button from "components/CustomButton/CustomButton.jsx";
 
-const columnnames = ["Nick Name", "Source Country", "Source Currancy", "Destination Country", "Destination Currancy", "Exchange Rate", "Remit Amount", "Expiration Date", "Offer Status", "Reputation Rating"];
+const columnnames = ["Nick Name", "Source Country", "Source Currency", "Destination Country", "Destination Currency", "Exchange Rate", "Remit Amount", "Expiration Date", "Offer Status", "Reputation Rating"];
 
 class AllOffers extends Component {
 
@@ -63,19 +63,16 @@ class AllOffers extends Component {
 
                             <tr key={offer.id} >
                               
-                              <td> {offer.nickName} </td>
-
+                              <td> {offer.user.nickName} </td>
                               <td> {offer.sourceCountry} </td>
-                              <td> {offer.sourceCurrancy} </td>
+                              <td> {offer.sourceCurrency} </td>
                               <td> {offer.destinationCountry} </td>
-                              <td> {offer.destinationCurrancy} </td>
+                              <td> {offer.destinationCurrency} </td>
                               <td> {offer.exchangeRate} </td>
                               <td> {offer.remitAmount}</td>
-
-
                               <td> {offer.expirationDate}</td>
-                              <td> {offer.offer_status} </td>
-                              <td> {offer.user_rating} </td>
+                              <td> {offer.offerStatus} </td>
+                              <td> {offer.user.rating} </td>
                               <td>
 
                                 {(() => {
