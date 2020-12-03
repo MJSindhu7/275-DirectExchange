@@ -1,5 +1,4 @@
 package edu.sjsu.cmpe275.finalproject.services;
-
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -8,11 +7,11 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.sjsu.cmpe275.finalproject.model.BankAccount;
 import edu.sjsu.cmpe275.finalproject.model.User;
 import edu.sjsu.cmpe275.finalproject.repository.UserRepository;
 
 @Service
-
 @Transactional
 public class UserService {
 
@@ -27,7 +26,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public User getAccount(String userName) throws NoResultException {
+  public User getAccount(String userName) throws NoResultException {
 		return userRepository.findById(userName).get(); }
 
 	public void deleteById(String accountNumber) {
