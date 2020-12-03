@@ -17,6 +17,7 @@
 */
 import React from "react";
 import ReactDOM from "react-dom";
+import Login from "./views/Login";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
@@ -32,7 +33,8 @@ ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
+       <Route path='/login' render={(props) => <Login {...props} />} /> 
+     <Redirect from="/admin" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

@@ -24,7 +24,8 @@ class BankAccountSetup extends Component {
 			address: '',
 			currency: '',
 			sendingOrReceiving: '',
-			 
+			userName: localStorage.getItem("userId"),
+			sendOrRecMap : ['Sending','Receiving','Both'],			 
 		}
 	}
 
@@ -36,17 +37,17 @@ class BankAccountSetup extends Component {
 		e.preventDefault();
 		let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber,
 			 ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, 
-			 sendingOrReceiving: this.state.sendingOrReceiving, user:{userName: this.state.userName}};
+			 sendingOrReceiving: this.state.sendingOrReceiving, user:{userName: localStorage.getItem("userId")}};
 		console.log('bankaccount => ' + JSON.stringify(bankaccount));
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
-			this.props.history.push('/dashboard');
+			this.props.history.push('/admin/dashboard');
 		});
 	}
 
 
 	cancel() {
-		this.props.history.push('/dashboard');
+		this.props.history.push('/admin/dashboard');
 	}
 
 	getTitle() {
@@ -157,10 +158,10 @@ class BankAccountSetup extends Component {
 												},
 												{
 													
-													label: "Primary currency",
+													label: "Primary Currency",
 													type: "text",
 													bsClass: "form-control",
-													placeholder: "Exchange Rate",
+													placeholder: "Primary Currency",
 													value: this.state.currency,
 													onChange: e => this.setState({ currency: e.target.value })
 
@@ -192,28 +193,18 @@ class BankAccountSetup extends Component {
 											]}
 										/>
 
-										<FormInputs
-											ncols={["col-md-4", "col-md-4"]}
+											<span className="text-small pr-1">Sending / Receiving / Both</span>
 
-											properties={[
-												{
-													label: "Sending/Recieving/Both",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "Sending/Recieving/Both",
-													value: this.state.sendingOrReceiving,
-													onChange: e => this.setState({ sendingOrReceiving: e.target.value })
-												},
-												{
-													label: "User Name",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "User Name",
-													value: this.state.userName,
-													onChange: e => this.setState({ userName: e.target.value })
-												}												
-											]}
-										/>
+										{/* <ul>{ this.state.bankaccounts.map((item, index) => (<li key={index}>{item.bankName}</li>)) }</ul>
+	 									*/}
+										<select id="debankacc" className="form-control" onChange={(event) => this.setState({ sendingOrReceiving: event.target.value })}>
+											<option selected>Choose...</option>
+											{
+
+												this.state.sendOrRecMap.map((item, index) => <option key={index}>{item}</option>)
+
+											}
+										</select>
 <div className="btn-toolbar">
 										
 										<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>

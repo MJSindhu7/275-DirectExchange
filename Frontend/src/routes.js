@@ -8,6 +8,7 @@ import MyOfferPage from "views/MyOfferPage";
 import PostOffer from "views/PostOffer";
 import BankAccountSetup from "views/BankAccountSetup";
 import BankTransaction from "views/BankTransaction";
+import ExhangeRates from "views/ExhangeRates";
 //import Login from "views/Login";
 
 const dashboardRoutes = [
@@ -44,7 +45,7 @@ const dashboardRoutes = [
 
   {
     path: "/transfermoney",
-    name: "Add Bank Account",
+    name: "Transfer Money",
     icon: "pe-7s-user",
     component: BankTransaction,
     layout: "/admin"
@@ -61,6 +62,13 @@ const dashboardRoutes = [
     name: "All Offers",
     icon: "pe-7s-note2",
     component: AllOffers,
+    layout: "/admin"
+  },
+  {
+    path: "/exchangerates",
+    name: "Prevailing Rates",
+    icon: "pe-7s-note2",
+    component: ExhangeRates,
     layout: "/admin"
   },
   {

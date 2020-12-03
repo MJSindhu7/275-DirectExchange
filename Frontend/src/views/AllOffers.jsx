@@ -69,7 +69,7 @@ const columns = [
   },
   {
     text: "User Rating",
-    dataField: "userRating",
+    dataField: "user.rating",
     sortable: true,
     //right: true
   },
@@ -108,21 +108,31 @@ function rankFormatter(cell, row, rowIndex, formatExtraData) {
   }
   else if (row.counteroffers) {
     return (
-      <div> <Button bsStyle="info" pullLeft fill type="submit" onClick={this.oncounteroffer}>
-        Counter Offer
-                    </Button>
+      <div class="btn-toolbar">
         <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
           Accept Offer
-                     </Button></div>
+                     </Button>
+        
+         <Button bsStyle="info" pullLeft fill type="submit" onClick={this.oncounteroffer}>
+        Counter Offer
+                    </Button>
+        </div>
     )
   }
 
   else if (row.splitExchange) {
     return (
-      <div>
-        <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
+      <div class="btn-toolbar">
+         <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
           Accept Offer
-                     </Button></div>
+                     </Button>
+        <Button bsStyle="info"  fill type="submit" onClick={this.onsplitoffer}>
+          Split
+                    </Button>
+
+                    </div>
+       
+                
     )
   }
 

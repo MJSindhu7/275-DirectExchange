@@ -17,7 +17,7 @@ class PostOffer extends Component {
     this.state = {
       // step 2
       id: this.props.match.params.id,
-      userName:'',
+      userName:localStorage.getItem("userId"),
       sourceCountry: '',
       sourceCurrency: '',
       remitAmount: '',
@@ -49,13 +49,13 @@ class PostOffer extends Component {
       newRemitAmount: this.state.newRemitAmount,
       splitExchange: this.state.splitExchange,
       offerStatus:"Open", 
-      user:{userName: this.state.userName}
+      user:{userName: localStorage.getItem("userId")}
     }
 
     console.log('offer => ' + JSON.stringify(offer));
 
     DirectExchangeService.addPostOffer(offer).then(res => {
-      this.props.history.push('/dashboard');
+      this.props.history.push('/admin/dashboard');
     });
   }
 
@@ -80,7 +80,7 @@ class PostOffer extends Component {
                           label: "Source Country",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Username",
+                          placeholder: "Source Country",
                           value: this.state.sourceCountry,
                           onChange: e => this.setState({ sourceCountry: e.target.value })
                         },
@@ -101,7 +101,7 @@ class PostOffer extends Component {
                           label: "Destination Country",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Last name",
+                          placeholder: "Destination Country",
                           value: this.state.destinationCountry,
                           onChange: e => this.setState({ destinationCountry: e.target.value })
                         },
@@ -123,7 +123,7 @@ class PostOffer extends Component {
                           label: "Remit Amount",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "First name",
+                          placeholder: "Remit Amount",
                           value: this.state.remitAmount,
                           onChange: e => this.setState({ remitAmount: e.target.value })
                         },
@@ -179,22 +179,7 @@ class PostOffer extends Component {
                       ]}
                     />
 
-                    <FormInputs
-                      ncols={["col-md-4"]}
-                      properties={[
-                          {
-													label: "User Name",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "User Name",
-													value: this.state.userName,
-													onChange: e => this.setState({ userName: e.target.value })
-												}	
-                      ]}
-                    />
-
-
-                    <Button bsStyle="info" pullRight fill type="submit" onClick={this.saveExchangeOffer}>
+                      <Button bsStyle="info" pullRight fill type="submit" onClick={this.saveExchangeOffer}>
                       Post Offer
                     </Button>
                     <div className="clearfix" />

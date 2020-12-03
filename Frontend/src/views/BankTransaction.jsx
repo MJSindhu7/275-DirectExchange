@@ -97,7 +97,7 @@ class BankTransaction extends Component {
 													label: "Amount",
 													type: "text",
 													bsClass: "form-control",
-													placeholder: "Bank Name",
+													placeholder: "Amount",
 													value: this.state.bankName,
 													onChange: e => this.setState({ bankName: e.target.value })
 												},

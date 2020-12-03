@@ -22,7 +22,7 @@ class MyOfferPage extends Component {
 
   componentDidMount() {
 
-    DirectExchangeService.listUsersExchangeOffer("pragati.shinde@gmail.com").then((res) => {
+    DirectExchangeService.listUsersExchangeOffer(localStorage.getItem("userId")).then((res) => {
       this.setState({ offers: res.data });
       console.log("**" + this.state.offers)
     });
