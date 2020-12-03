@@ -16,7 +16,9 @@ public interface PostExchangeOfferRepository extends JpaRepository<Offers, Long>
 //	@Query(value="select * from Offers e where e.user_name=:user_name", nativeQuery = true)
 //	List<Offers> findAllOffers(@Param("user_name") String userName);
 	
-	 @Query(value="select * from Offers e where e.user_name=:user_name order by field(offer_status,\"Open\",\"CounterMade\",\"InTransaction\",\"Fulfilled\",\"Expired\")", nativeQuery = true)
-	 List<Offers> getMyOffers(@Param("user_name") String userName);
+	final static String GET_OFFERS_QUERY = "select * from Offers e where e.user_name=:user_name order by field(offer_status,\"Open\",\"CounterMade\",\"InTransaction\",\"Fulfilled\",\"Expired\")";
+	
+	 @Query(value=GET_OFFERS_QUERY, nativeQuery = true)
+	 List<Offers> getMyOffers(@Param("user_name") String user_name);
 }
 

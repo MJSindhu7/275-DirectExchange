@@ -24,9 +24,7 @@ class BankAccountSetup extends Component {
 			address: '',
 			currency: '',
 			sendingOrReceiving: '',
-			sending: '',
-			receiving: '',
-			both: ''
+			userName: ''
 		}
 	}
 
@@ -36,7 +34,9 @@ class BankAccountSetup extends Component {
 	}
 	saveOrUpdateBankAcc = (e) => {
 		e.preventDefault();
-		let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber, ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, sendingOrReceiving: this.state.sendingOrReceiving };
+		let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber,
+			 ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, 
+			 sendingOrReceiving: this.state.sendingOrReceiving, user:{userName: this.state.userName}};
 		console.log('bankaccount => ' + JSON.stringify(bankaccount));
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
@@ -193,22 +193,25 @@ class BankAccountSetup extends Component {
 										/>
 
 										<FormInputs
-											ncols={["col-md-4"]}
+											ncols={["col-md-4", "col-md-4"]}
 
 											properties={[
 												{
-													label: "Sending Amount",
-													type: "select",
+													label: "Sending/Recieving/Both",
+													type: "text",
 													bsClass: "form-control",
-													placeholder: "Counter Offers",
+													placeholder: "Sending/Recieving/Both",
 													value: this.state.sendingOrReceiving,
-													onChange: e => this.setState({ sendingOrReceiving: e.target.checked })
-
-
-
-												}
-
-												
+													onChange: e => this.setState({ sendingOrReceiving: e.target.value })
+												},
+												{
+													label: "User Name",
+													type: "text",
+													bsClass: "form-control",
+													placeholder: "User Name",
+													value: this.state.userName,
+													onChange: e => this.setState({ userName: e.target.value })
+												}												
 											]}
 										/>
 
