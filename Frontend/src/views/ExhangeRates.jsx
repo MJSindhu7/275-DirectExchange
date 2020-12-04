@@ -55,7 +55,7 @@ class ExhangeRates extends Component {
          rates: [
             { Currency: 'EUR', EUR: 1.00 , GBP: 0.90, INR: 89.60, RMB: 7.94, USD: 1.21 },
             { Currency: 'GBP', EUR: 1.11, GBP: 1.00, INR: 99.47, RMB: 8.81, USD: 1.35 },
-            { Currency: 'INR', EUR: 0.011 , GBP: 0.01, INR: 1.00, RMB: 0.089, USD: 0.14 },
+            { Currency: 'INR', EUR: 0.011 , GBP: 0.01, INR: 1.00, RMB: 0.089, USD: 0.014 },
             { Currency: 'RMB', EUR: 0.13, GBP: 0.11, INR: 11.29, RMB: 1.00, USD: 0.15 },
             { Currency: 'USD', EUR: 0.82, GBP: 0.74, INR: 73.84, RMB: 6.54, USD: 1.00 }
          ]

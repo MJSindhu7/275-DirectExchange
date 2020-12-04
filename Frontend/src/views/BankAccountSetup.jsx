@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import {
 	Grid,
 	Row,
-	Col
+	Col,
+	Dropdown
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -159,7 +160,7 @@ class BankAccountSetup extends Component {
 												{
 													
 													label: "Primary Currency",
-													type: "text",
+													type: "Dropdown",
 													bsClass: "form-control",
 													placeholder: "Primary Currency",
 													value: this.state.currency,
@@ -205,15 +206,16 @@ class BankAccountSetup extends Component {
 
 											}
 										</select>
-<div className="btn-toolbar">
-										
-										<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>
-											Cancel
-                    </Button>
-					<Button bsStyle="info" pullRight fill type="submit" onClick={this.saveOrUpdateBankAcc}>
-											Add Account
-                    </Button>
-					</div>
+										<div className="btn-toolbar">
+												
+											<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>
+													Cancel
+											</Button>
+							
+											<Button bsStyle="info" pullRight fill type="submit" onClick={this.saveOrUpdateBankAcc}>
+													Add Account
+										</Button>
+										</div>
 										<div className="clearfix" />
 									</form>
 								}

@@ -155,7 +155,7 @@ class Login extends Component {
         userName: userEmail,
         nickName: userName,
       }).then((res) => {
-        //this.props.history.push("/dashboard");
+        this.props.history.push("/admin/dashboard");
       });
     }
   };
@@ -253,6 +253,7 @@ class Login extends Component {
               // <Button onClick={signInWithGoogle}>Sign in with Google</Button>
             )}
             <div></div>
+            {user ? localStorage.setItem("userId", user.email) : ""}
             {user ? this.fromEmail(user.email, user.displayName) : ""}
           </div>
           <br></br>
