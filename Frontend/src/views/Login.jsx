@@ -12,12 +12,20 @@ import "firebase/auth";
 import firebaseConfig from "../firebaseConfig";
 import { Route } from "react-router-dom";
 import DirectExchangeService from "../services/DirectExchangeService";
-import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import "firebase/firestore";
+
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
 //import styles from './login.css';
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();
+
+//const userRef = firestore.doc(`users/${user.uid}`);
+//const snapshot = userRef.get();
 
 const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
@@ -31,7 +39,10 @@ class Login extends Component {
     password: "",
     nickname: "",
     signInShow: false,
+    //user: null,
+    test1: [],
   };
+
   handleClose = () => {
     this.setState({
       show: false,
@@ -73,17 +84,22 @@ class Login extends Component {
             this.setState({
               show: false,
             });
-            let user = {
+            let userSignUp = {
               userName: this.state.email,
               nickName: this.state.nickname,
             };
-            console.log("user => " + JSON.stringify(user));
+            console.log("user => " + JSON.stringify(userSignUp));
 
             localStorage.setItem("userId", this.state.email);
 
-            DirectExchangeService.addUsertoDirectExchange(user).then((res) => {
-              //this.props.history.push("/dashboard");
-            });
+            DirectExchangeService.addUsertoDirectExchange(userSignUp).then(
+              (res) => {
+                //this.props.history.push("/dashboard");
+              }
+            );
+            this.state.email = "";
+            this.state.nickname = "";
+            this.state.password = "";
             window.alert("SignUp Successful, Verification Email Snet");
           })
           .catch((error) => {
@@ -107,15 +123,15 @@ class Login extends Component {
         });
         localStorage.setItem("userId", this.state.email);
         console.log("Success");
-        this.props.history.push('/admin/dashboard');
+        this.state.email = "";
+        this.state.password = "";
+        this.props.history.push("/admin/dashboard");
       })
       .catch((error) => {
         window.alert("Invalid Username/Password");
         var errorCode = error.code;
         var errorMessage = error.message;
       });
-
-    
   };
 
   signOut = () => {
@@ -125,12 +141,24 @@ class Login extends Component {
       .then(function () {
         window.localStorage.clear();
         // Sign-out successful.
+        this.state.email = "";
+        this.state.password = "";
       })
       .catch(function (error) {
         // An error happened.
       });
   };
 
+  fromEmail = (userEmail, userName) => {
+    {
+      DirectExchangeService.addUsertoDirectExchange({
+        userName: userEmail,
+        nickName: userName,
+      }).then((res) => {
+        //this.props.history.push("/dashboard");
+      });
+    }
+  };
   changeHandlerEmail = (evt) => {
     this.setState({
       email: evt.target.value,
@@ -161,7 +189,8 @@ class Login extends Component {
   render() {
     const { user, signOut, signInWithGoogle } = this.props;
     const { userFB, signOutFB, signInWithFacebook } = this.props;
-
+    let userEmail, userName;
+    let userEmailSignUp;
     return (
       <div className="Login" style={{ margin: "auto", width: "30%" }}>
         <div className="row">
@@ -185,8 +214,7 @@ class Login extends Component {
             placeholder="Enter email"
             value={this.state.email}
           />
-          <br>
-          </br>
+          <br></br>
           <label htmlFor="loginPassword">Password</label>
           <input
             onChange={this.changeHandlerPwd}
@@ -196,49 +224,58 @@ class Login extends Component {
             placeholder="Password"
             value={this.state.password}
           />
-
-
         </div>
-       
-          <div class="btn-toolbar">
-        <Button variant="secondary" onClick={this.handleCloseSignIn}>
-          Close
-            </Button>
-        <Button variant="primary" onClick={this.signIn}>
-          Sign In
-            </Button>
-            </div>
-       
+
+        <div class="btn-toolbar">
+          <Button variant="secondary" onClick={this.handleCloseSignIn}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={this.signIn}>
+            Sign In
+          </Button>
+        </div>
+
         <br />
 
         <br />
         <div className="row">
-           <div class="btn-toolbar">
-          {user ? (
-            <GoogleLoginButton onClick={signOut} style={{ margin: "auto", width: "50%" }}></GoogleLoginButton>
-          ) : (
-              <GoogleLoginButton onClick={signInWithGoogle} style={{ margin: "auto", width: "50%" }}></GoogleLoginButton>
+          <div class="btn-toolbar">
+            {user ? (
+              <GoogleLoginButton
+                onClick={signOut}
+                style={{ margin: "auto", width: "50%" }}
+              ></GoogleLoginButton>
+            ) : (
+              <GoogleLoginButton
+                onClick={signInWithGoogle}
+                style={{ margin: "auto", width: "50%" }}
+              ></GoogleLoginButton>
               // <Button onClick={signInWithGoogle}>Sign in with Google</Button>
             )}
-            </div>
-            <br></br>
-             <div class="btn-toolbar">
- {userFB ? (
-              <FacebookLoginButton onClick={signOutFB} style={{ margin: "auto", width: "50%" }}> </FacebookLoginButton>
-
+            <div></div>
+            {user ? this.fromEmail(user.email, user.displayName) : ""}
+          </div>
+          <br></br>
+          <div class="btn-toolbar">
+            {userFB ? (
+              <FacebookLoginButton
+                onClick={signOutFB}
+                style={{ margin: "auto", width: "50%" }}
+              >
+                {" "}
+              </FacebookLoginButton>
             ) : (
-                <FacebookLoginButton onClick={signInWithFacebook} style={{ margin: "auto", width: "50%" }}>Login with Facebook </FacebookLoginButton>
-
-              )}
- </div>
+              <FacebookLoginButton
+                onClick={signInWithFacebook}
+                style={{ margin: "auto", width: "50%" }}
+              >
+                Login with Facebook{" "}
+              </FacebookLoginButton>
+            )}
+          </div>
         </div>
         <br />
-        <div className="row">
-         
-         
-           
-         
-        </div>
+        <div className="row"></div>
         <div className="row" style={{ margin: "auto", width: "30%" }}>
           <div className="col-4"></div>
           <Button onClick={this.handleShow}>Create an Account</Button>
@@ -292,7 +329,6 @@ class Login extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-
       </div>
     );
   }
