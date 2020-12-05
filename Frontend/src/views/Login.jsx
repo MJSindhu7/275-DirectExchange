@@ -250,7 +250,6 @@ class Login extends Component {
                 onClick={signInWithGoogle}
                 style={{ margin: "auto", width: "50%" }}
               ></GoogleLoginButton>
-              // <Button onClick={signInWithGoogle}>Sign in with Google</Button>
             )}
             <div></div>
             {user ? localStorage.setItem("userId", user.email) : ""}

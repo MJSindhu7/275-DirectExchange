@@ -32,4 +32,10 @@ public class UserService {
 	public void deleteById(String accountNumber) {
 		userRepository.deleteById(accountNumber);
 	}
+	
+	public String getNickName(String user_name) {
+		return userRepository.getNick(user_name);
+		
+	}
+
 }
