@@ -22,7 +22,7 @@ import { Grid, Row, Col } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
-import DirectExchangeService from "../services/DirectExchangeService";
+
 import {
   dataPie,
   legendPie,
@@ -37,9 +37,6 @@ import {
 } from "variables/Variables.jsx";
 
 class Dashboard extends Component {
-  state = {
-    nickname: "",
-  };
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
@@ -51,26 +48,9 @@ class Dashboard extends Component {
     return legend;
   }
 
-  setNick = (name) => {
-    this.setState({
-      nickname: name,
-    });
-  };
-
-  componentDidMount() {
-    DirectExchangeService.getNickName(localStorage.getItem("userId"))
-      .then((res) => {
-        this.setNick(res.data);
-      })
-      .catch(function (error) {
-        return null;
-      });
-  }
-
   render() {
     return (
       <div className="content">
-        {"Welcome user " + this.state.nickname}
         {/* <Grid fluid>
           <Row>
             <Col lg={3} sm={6}>

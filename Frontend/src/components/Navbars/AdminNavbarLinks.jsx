@@ -19,38 +19,47 @@ import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import firebase from "firebase/app";
 import "firebase/auth";
-import firebaseConfig from "/Users/sindhuram/Documents/Mine/SJSU/Sem4/275/JSP/Frontend/src/firebaseConfig";
-///Users/sindhuram/Documents/Mine/SJSU/Sem4/275/275JSP/Frontend/src
 import { Route } from "react-router-dom";
 import "firebase/firestore";
 import { useHistory, withRouter } from "react-router-dom";
-//import login from "/Users/sindhuram/Documents/Mine/SJSU/Sem4/275/JSP/Frontend/src/views/firebaseConfig";
+import DirectExchangeService from "../../services/DirectExchangeService";
 
-/*const MyComponent = (props) => {
-  const history = useHistory();
-
-  handleOnSubmit = () => {
-    history.push(`/dashboard`);
-  };
-};*/
 class AdminNavbarLinks extends Component {
+  state = {
+    nickname: "",
+  };
   signOut = () => {
-    //const history = useHistory();
-
     firebase
       .auth()
       .signOut()
       .then(() => {
         window.localStorage.clear();
         console.log("Clicked logout");
-        // debugger;
         this.props.history.push("/login");
-        //window.history.replaceState(null, null, "/");
       })
-      .catch(function (error) {
-        //window.alert("Error while logging out");
-      });
+      .catch(function (error) {});
   };
+
+  setNick = (name) => {
+    this.setState({
+      nickname: name,
+    });
+  };
+
+  componentDidMount() {
+    let userID = localStorage.getItem("userId");
+    if (!userID) {
+      this.props.history.push("/login");
+    } else {
+      DirectExchangeService.getNickName(userID)
+        .then((res) => {
+          this.setNick(res.data);
+        })
+        .catch(function (error) {
+          return null;
+        });
+    }
+  }
 
   render() {
     const notification = (
@@ -86,6 +95,9 @@ class AdminNavbarLinks extends Component {
           </NavItem>
         </Nav>
         <Nav pullRight>
+          <NavItem>
+            {this.state.nickname ? "Welcome " + this.state.nickname : ""}
+          </NavItem>
           <NavItem eventKey={1} href="#">
             Account
           </NavItem>

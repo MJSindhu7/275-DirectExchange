@@ -13,19 +13,16 @@ import firebaseConfig from "../firebaseConfig";
 import { Route } from "react-router-dom";
 import DirectExchangeService from "../services/DirectExchangeService";
 import "firebase/firestore";
+//import { AccessToken, LoginManager, LoginButton } from "react-native-fbsdk";
 
 import {
   FacebookLoginButton,
   GoogleLoginButton,
 } from "react-social-login-buttons";
-//import styles from './login.css';
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();
-
-//const userRef = firestore.doc(`users/${user.uid}`);
-//const snapshot = userRef.get();
 
 const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
@@ -38,6 +35,8 @@ class Login extends Component {
     email: "",
     password: "",
     nickname: "",
+    signUpEmail: "",
+    signUpPwd: "",
     signInShow: false,
     //user: null,
     test1: [],
@@ -67,49 +66,66 @@ class Login extends Component {
   };
 
   signUp = () => {
-    console.log(this.state.email);
-    console.log(this.state.password);
+    console.log(this.state.signUpEmail);
+    console.log(this.state.signUpPwd);
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .createUserWithEmailAndPassword(
+        this.state.signUpEmail,
+        this.state.signUpPwd
+      )
       .then((user) => {
         firebase
           .auth()
           .currentUser.sendEmailVerification()
-          .then(() => {
-            // Email verification sent!
-            // ...
+          .then(async () => {
             console.log("Email sent");
             console.log("Able to sign up");
             this.setState({
               show: false,
             });
             let userSignUp = {
-              userName: this.state.email,
+              userName: this.state.signUpEmail,
               nickName: this.state.nickname,
+              rating: 0,
             };
-            console.log("user => " + JSON.stringify(userSignUp));
 
-            localStorage.setItem("userId", this.state.email);
-
-            DirectExchangeService.addUsertoDirectExchange(userSignUp).then(
-              (res) => {
-                //this.props.history.push("/dashboard");
+            localStorage.setItem("userId", this.state.signUpEmail);
+            try {
+              let res = await DirectExchangeService.getNickName(
+                localStorage.getItem("userId")
+              );
+              if (res) {
+                this.setState({
+                  nickname: res.data,
+                });
               }
-            );
-            this.state.email = "";
-            this.state.nickname = "";
-            this.state.password = "";
-            window.alert("SignUp Successful, Verification Email Snet");
+              if (this.state.nickname == "") {
+                console.log("INNNN");
+                DirectExchangeService.addUsertoDirectExchange(
+                  userSignUp
+                ).then((res) => {});
+                this.state.signUpEmail = "";
+                this.state.nickname = "";
+                this.state.signUpPwd = "";
+                window.alert("SignUp Successful, Verification Email Snet");
+              }
+            } catch (err) {
+              console.log(err);
+            }
           })
           .catch((error) => {
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log("Error");
-            console.log(errorCode);
-            console.log(errorMessage);
+            //console.log(errorCode);
+            //console.log(errorMessage);
           });
+
         //window.location.reload(false);
+      })
+      .catch((error) => {
+        window.alert(error.message);
+        console.log(error.message);
       });
   };
 
@@ -140,7 +156,6 @@ class Login extends Component {
       .signOut()
       .then(function () {
         window.localStorage.clear();
-        // Sign-out successful.
         this.state.email = "";
         this.state.password = "";
       })
@@ -148,15 +163,36 @@ class Login extends Component {
         // An error happened.
       });
   };
-
+  reset = () => {
+    this.setState({
+      email: "",
+    });
+    this.setState({
+      password: "",
+    });
+  };
   fromEmail = (userEmail, userName) => {
     {
-      DirectExchangeService.addUsertoDirectExchange({
-        userName: userEmail,
-        nickName: userName,
-      }).then((res) => {
-        this.props.history.push("/admin/dashboard");
-      });
+      DirectExchangeService.getNickName(localStorage.getItem("userId"))
+        .then((res) => {
+          this.state.nickname = res.data;
+        })
+        .catch(function (error) {
+          return null;
+        });
+      if (this.state.nickname == "") {
+        DirectExchangeService.addUsertoDirectExchange({
+          userName: userEmail,
+          nickName: userName,
+          rating: 0,
+        })
+          .then((res) => {
+            this.props.history.push("/admin/dashboard");
+          })
+          .catch(function (error) {
+            return null;
+          });
+      }
     }
   };
   changeHandlerEmail = (evt) => {
@@ -186,24 +222,29 @@ class Login extends Component {
       password: evt.target.value,
     });
   };
+
+  changeHandlerSignUpPwd = (evt) => {
+    this.setState({
+      signUpPwd: evt.target.value,
+    });
+  };
+
+  changeHandlerSignUpEmail = (evt) => {
+    this.setState({
+      signUpEmail: evt.target.value,
+    });
+  };
+
   render() {
     const { user, signOut, signInWithGoogle } = this.props;
     const { userFB, signOutFB, signInWithFacebook } = this.props;
-    let userEmail, userName;
-    let userEmailSignUp;
     return (
       <div className="Login" style={{ margin: "auto", width: "30%" }}>
-        <div className="row">
-          {/* <div className="col-4"></div>
-                 <Button onClick={this.handleShowSignIn}>Sign in </Button> */}
-        </div>
-        {/* <Modal show={this.state.signInShow} onHide={this.handleCloseSignIn}> */}
-        {/*window.alert("dfdfdfddf")*/}
-        {/* <Modal.Header closeButton>
-            <Modal.Title>Sign In</Modal.Title>
-          </Modal.Header>
-          <Modal.Body> */}
+        <div className="row"></div>
+
         <div className="form-group">
+          <h1 align="center">Direct Exchange</h1>
+          <br />
           <label htmlFor="loginEmail">Username</label>
           <input
             onChange={this.changeHandlerEmail}
@@ -226,9 +267,9 @@ class Login extends Component {
           />
         </div>
 
-        <div class="btn-toolbar">
-          <Button variant="secondary" onClick={this.handleCloseSignIn}>
-            Close
+        <div className="btn-toolbar">
+          <Button variant="secondary" onClick={this.reset}>
+            Reset
           </Button>
           <Button variant="primary" onClick={this.signIn}>
             Sign In
@@ -239,7 +280,7 @@ class Login extends Component {
 
         <br />
         <div className="row">
-          <div class="btn-toolbar">
+          <div className="btn-toolbar">
             {user ? (
               <GoogleLoginButton
                 onClick={signOut}
@@ -256,7 +297,7 @@ class Login extends Component {
             {user ? this.fromEmail(user.email, user.displayName) : ""}
           </div>
           <br></br>
-          <div class="btn-toolbar">
+          <div className="btn-toolbar">
             {userFB ? (
               <FacebookLoginButton
                 onClick={signOutFB}
@@ -278,7 +319,9 @@ class Login extends Component {
         <div className="row"></div>
         <div className="row" style={{ margin: "auto", width: "30%" }}>
           <div className="col-4"></div>
-          <Button onClick={this.handleShow}>Create an Account</Button>
+          <Button variant="primary" onClick={this.handleShow}>
+            Create an Account
+          </Button>
         </div>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
@@ -288,13 +331,13 @@ class Login extends Component {
             <div className="form-group">
               <label htmlFor="exampleInputEmail1">Username</label>
               <input
-                onChange={this.changeHandlerEmail}
+                onChange={this.changeHandlerSignUpEmail}
                 type="email"
                 className="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
-                value={this.state.email}
+                value={this.state.signUpEmail}
               />
             </div>
             <div className="form-group">
@@ -304,19 +347,20 @@ class Login extends Component {
                 type="text"
                 className="form-control"
                 id="nickName"
-                aria-describedby="emailHelp"
+                aria-describedby="nickName"
                 placeholder="Enter Nick Name"
+                value={this.state.nickname}
               />
             </div>
             <div className="form-group">
               <label htmlFor="exampleInputPassword1">Password</label>
               <input
-                onChange={this.changeHandlerPwd}
+                onChange={this.changeHandlerSignUpPwd}
                 type="password"
                 className="form-control"
                 id="exampleInputPassword1"
                 placeholder="Password"
-                value={this.state.password}
+                value={this.state.signUpPwd}
               />
             </div>
           </Modal.Body>
