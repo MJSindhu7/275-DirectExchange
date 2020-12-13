@@ -86,6 +86,9 @@ class AdminNavbarLinks extends Component {
           </NavItem>
         </Nav>
         <Nav pullRight>
+          <NavItem>
+            {this.state.nickname ? "Welcome " + this.state.nickname : ""}
+          </NavItem>
           <NavItem eventKey={1} href="#">
             Account
           </NavItem>
