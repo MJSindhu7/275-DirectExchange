@@ -19,47 +19,38 @@ import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import firebase from "firebase/app";
 import "firebase/auth";
+import firebaseConfig from "firebaseConfig";
+///Users/sindhuram/Documents/Mine/SJSU/Sem4/275/275JSP/Frontend/src
 import { Route } from "react-router-dom";
 import "firebase/firestore";
 import { useHistory, withRouter } from "react-router-dom";
-import DirectExchangeService from "../../services/DirectExchangeService";
+//import login from "/Users/sindhuram/Documents/Mine/SJSU/Sem4/275/JSP/Frontend/src/views/firebaseConfig";
 
-class AdminNavbarLinks extends Component {
-  state = {
-    nickname: "",
+/*const MyComponent = (props) => {
+  const history = useHistory();
+
+  handleOnSubmit = () => {
+    history.push(`/dashboard`);
   };
-  signOut = () => {
+};*/
+class AdminNavbarLinks extends Component {
+           signOut = () => {
+    //const history = useHistory();
+
     firebase
       .auth()
       .signOut()
       .then(() => {
         window.localStorage.clear();
         console.log("Clicked logout");
+        // debugger;
         this.props.history.push("/login");
+        //window.history.replaceState(null, null, "/");
       })
-      .catch(function (error) {});
+      .catch(function (error) {
+        //window.alert("Error while logging out");
+      });
   };
-
-  setNick = (name) => {
-    this.setState({
-      nickname: name,
-    });
-  };
-
-  componentDidMount() {
-    let userID = localStorage.getItem("userId");
-    if (!userID) {
-      this.props.history.push("/login");
-    } else {
-      DirectExchangeService.getNickName(userID)
-        .then((res) => {
-          this.setNick(res.data);
-        })
-        .catch(function (error) {
-          return null;
-        });
-    }
-  }
 
   render() {
     const notification = (

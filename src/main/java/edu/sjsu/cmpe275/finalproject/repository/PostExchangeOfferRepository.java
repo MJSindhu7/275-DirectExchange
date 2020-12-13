@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.finalproject.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,10 @@ public interface PostExchangeOfferRepository extends JpaRepository<Offers, Long>
 	
 	 @Query(value=GET_OFFERS_QUERY, nativeQuery = true)
 	 List<Offers> getMyOffers(@Param("user_name") String user_name);
+	 
+	 @Modifying(clearAutomatically = true)
+	    @Query("UPDATE Offers c SET c.offerStatus = :offerStatus WHERE c.id = :id")
+	    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
 }
+
 

@@ -19,10 +19,14 @@ import {
   FacebookLoginButton,
   GoogleLoginButton,
 } from "react-social-login-buttons";
+//import styles from './login.css';
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();
+
+//const userRef = firestore.doc(`users/${user.uid}`);
+//const snapshot = userRef.get();
 
 const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
@@ -85,34 +89,23 @@ class Login extends Component {
               show: false,
             });
             let userSignUp = {
-              userName: this.state.signUpEmail,
+              userName: this.state.email,
               nickName: this.state.nickname,
               rating: 0,
             };
+            console.log("user => " + JSON.stringify(userSignUp));
 
-            localStorage.setItem("userId", this.state.signUpEmail);
-            try {
-              let res = await DirectExchangeService.getNickName(
-                localStorage.getItem("userId")
-              );
-              if (res) {
-                this.setState({
-                  nickname: res.data,
-                });
+            localStorage.setItem("userId", this.state.email);
+
+            DirectExchangeService.addUsertoDirectExchange(userSignUp).then(
+              (res) => {
+                //this.props.history.push("/dashboard");
               }
-              if (this.state.nickname == "") {
-                console.log("INNNN");
-                DirectExchangeService.addUsertoDirectExchange(
-                  userSignUp
-                ).then((res) => {});
-                this.state.signUpEmail = "";
-                this.state.nickname = "";
-                this.state.signUpPwd = "";
-                window.alert("SignUp Successful, Verification Email Snet");
-              }
-            } catch (err) {
-              console.log(err);
-            }
+            );
+            this.state.email = "";
+            this.state.nickname = "";
+            this.state.password = "";
+            window.alert("SignUp Successful, Verification Email Snet");
           })
           .catch((error) => {
             var errorCode = error.code;
@@ -156,6 +149,7 @@ class Login extends Component {
       .signOut()
       .then(function () {
         window.localStorage.clear();
+        // Sign-out successful.
         this.state.email = "";
         this.state.password = "";
       })
@@ -163,36 +157,15 @@ class Login extends Component {
         // An error happened.
       });
   };
-  reset = () => {
-    this.setState({
-      email: "",
-    });
-    this.setState({
-      password: "",
-    });
-  };
+
   fromEmail = (userEmail, userName) => {
     {
-      DirectExchangeService.getNickName(localStorage.getItem("userId"))
-        .then((res) => {
-          this.state.nickname = res.data;
-        })
-        .catch(function (error) {
-          return null;
-        });
-      if (this.state.nickname == "") {
-        DirectExchangeService.addUsertoDirectExchange({
-          userName: userEmail,
-          nickName: userName,
-          rating: 0,
-        })
-          .then((res) => {
-            this.props.history.push("/admin/dashboard");
-          })
-          .catch(function (error) {
-            return null;
-          });
-      }
+      DirectExchangeService.addUsertoDirectExchange({
+        userName: userEmail,
+        nickName: userName,
+      }).then((res) => {
+        this.props.history.push("/admin/dashboard");
+      });
     }
   };
   changeHandlerEmail = (evt) => {
@@ -238,6 +211,8 @@ class Login extends Component {
   render() {
     const { user, signOut, signInWithGoogle } = this.props;
     const { userFB, signOutFB, signInWithFacebook } = this.props;
+    let userEmail, userName;
+    let userEmailSignUp;
     return (
       <div className="Login" style={{ margin: "auto", width: "30%" }}>
         <div className="row"></div>
@@ -267,9 +242,9 @@ class Login extends Component {
           />
         </div>
 
-        <div className="btn-toolbar">
-          <Button variant="secondary" onClick={this.reset}>
-            Reset
+        <div class="btn-toolbar">
+          <Button variant="secondary" onClick={this.handleCloseSignIn}>
+            Close
           </Button>
           <Button variant="primary" onClick={this.signIn}>
             Sign In
@@ -280,7 +255,7 @@ class Login extends Component {
 
         <br />
         <div className="row">
-          <div className="btn-toolbar">
+          <div class="btn-toolbar">
             {user ? (
               <GoogleLoginButton
                 onClick={signOut}
@@ -297,7 +272,7 @@ class Login extends Component {
             {user ? this.fromEmail(user.email, user.displayName) : ""}
           </div>
           <br></br>
-          <div className="btn-toolbar">
+          <div class="btn-toolbar">
             {userFB ? (
               <FacebookLoginButton
                 onClick={signOutFB}

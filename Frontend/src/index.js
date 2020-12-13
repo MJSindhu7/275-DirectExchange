@@ -26,7 +26,7 @@ import "./assets/css/animate.min.css";
 import "./assets/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
 import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
-import AdminNavbarLinks from "/Users/sindhuram/Documents/Mine/SJSU/Sem4/275/JSP/Frontend/src/components/Navbars/AdminNavbarLinks.jsx";
+import AdminNavbarLinks from "./components/Navbars/AdminNavbarLinks.jsx";
 
 import AdminLayout from "layouts/Admin.jsx";
 

@@ -35,8 +35,11 @@ public class Offers {
 	@Column(name = "source_currency")
 	private String sourceCurrency;
 
-	@Column(name = "remit_amount")
-	private double remitAmount;
+	@Column(name = "remit_amount_source")
+	private double remitAmountSource;
+	
+	@Column(name = "remit_amount_destination")
+	private double remitAmountDestination;
 
 	@Column(name = "destination_country")
 	private String destinationCountry;
@@ -139,13 +142,20 @@ public class Offers {
 	}
 
 	
-
-	public double getRemitAmount() {
-		return remitAmount;
+	public double getRemitAmountSource() {
+		return remitAmountSource;
 	}
 
-	public void setRemitAmount(double remitAmount) {
-		this.remitAmount = remitAmount;
+	public void setRemitAmountSource(double remitAmountSource) {
+		this.remitAmountSource = remitAmountSource;
+	}
+
+	public double getRemitAmountDestination() {
+		return remitAmountDestination;
+	}
+
+	public void setRemitAmountDestination(double remitAmountDestination) {
+		this.remitAmountDestination = remitAmountDestination;
 	}
 
 	public double getNewRemitAmount() {
@@ -183,7 +193,7 @@ public class Offers {
 	@Override
 	public String toString() {
 		return "Offers [id=" + id + ", user=" + user + ", sourceCountry=" + sourceCountry
-				+ ", sourceCurrency=" + sourceCurrency + ", remitAmount=" + remitAmount + ", destinationCountry="
+				+ ", sourceCurrency=" + sourceCurrency + ", remitAmount=" + remitAmountSource + ", destinationCountry="
 				+ destinationCountry + ", destinationCurrency=" + destinationCurrency + ", exchangeRate=" + exchangeRate
 				+ ", expirationDate=" + expirationDate + ", counteroffers=" + counteroffers + ", newRemitAmount="
 				+ newRemitAmount + ", splitExchange=" + splitExchange + ", offerStatus="

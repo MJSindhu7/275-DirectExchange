@@ -6,71 +6,120 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import BootstrapTable from "react-bootstrap-table-next";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import paginationFactory from "react-bootstrap-table2-paginator";
-//const columnnames = ["Nick Name", "Source Country", "Source Currancy", "Destination Country", "Destination Currancy", "Exchange Rate", "Remit Amount", "Expiration Date", "Offer Status", "Reputation Rating"];
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, numberFilter } from 'react-bootstrap-table2-filter';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-let nameFilter;
-let priceFilter;
-let stockFilter;
-let originFilter;
+import {Modal } from "react-bootstrap";
+import UpdateOffer from "./UpdateOffer";
 
-const columns = [
+ 
+class AllOffers extends Component {
+
+  columns = [
   {
     text: "Id",
     dataField: "id",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "4%" };
+    }
   },
   {
     text: "Nick Name",
     dataField: "user.nickName",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "6%" };
+    }
   },
   {
     text: "Source Country",
     dataField: "sourceCountry",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
   },
   {
-    text: "Source Currancye",
+    text: "Source Currency",
     dataField: "sourceCurrency",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
   },
   {
     text: "Destination Country",
     dataField: "destinationCountry",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
   },
   {
-    text: "Destination Currancy",
+    text: "Destination Currency",
     dataField: "destinationCurrency",
-    sortable: true
+    sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
   }
   ,
   {
     text: "Exchange Rate",
     dataField: "exchangeRate",
     sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
     //right: true
   },
   {
-    text: "Remit Amount",
-    dataField: "remitAmount",
+    text: "Source Remit Amount",
+    dataField: "remitAmountSource",
     sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
     //filter: textFilter()
     //right: true
-  },
+  },,
+  {
+    text: "Destination Remit Amount",
+    dataField: "remitAmountDestination",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
+    //filter: textFilter()
+    //right: true
+  }
 
   ,
   {
     text: "Expiration Date",
     dataField: "expirationDate",
     sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
     //right: true
   },
   {
     text: "User Rating",
     dataField: "user.rating",
     sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
+    //right: true
+  },
+  {
+    text: "Offer Status",
+    dataField: "offerStatus",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "12%" };
+    }
     //right: true
   },
 
@@ -82,16 +131,11 @@ const columns = [
       return { width: "25%" };
     }
    ,
-    formatter: rankFormatter
-    //right: true
-  }
-
-];
-function rankFormatter(cell, row, rowIndex, formatExtraData) {
-
+    formatter: (cell, row, rowIndex, formatExtraData) => {
+  if(row.user.userName!=localStorage.getItem("userId") & row.offerStatus=="Open"){
   if (row.counteroffers & row.splitExchange) {
     return (
-      <div class="btn-toolbar"> <Button bsStyle="info" pullRight fill type="submit" onClick={this.oncounteroffer}>
+      <div class="btn-toolbar"> <Button bsStyle="info" pullRight fill type="submit" onClick={() => {this.setState({rowval:row}); this.handleShow()}}>
         Counter
                     </Button>
                    
@@ -99,7 +143,7 @@ function rankFormatter(cell, row, rowIndex, formatExtraData) {
           Split
                     </Button>
                  
-        <Button bsStyle="success" pullRight fill type="submit" onClick={() => { onacceptoffer(row)}}>
+        <Button bsStyle="success" pullRight fill type="submit" onClick={() => { this.directacceptoffer(row)}}>
         
           
           Accept
@@ -109,11 +153,11 @@ function rankFormatter(cell, row, rowIndex, formatExtraData) {
   else if (row.counteroffers) {
     return (
       <div class="btn-toolbar">
-        <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
+        <Button bsStyle="success" pullLeft fill type="submit" onClick={() => { this.directacceptoffer(row)}}>
           Accept Offer
                      </Button>
         
-         <Button bsStyle="info" pullLeft fill type="submit" onClick={this.oncounteroffer}>
+         <Button bsStyle="info" pullLeft fill type="submit" onClick={() => { this.counteroffer(row)}}>
         Counter Offer
                     </Button>
         </div>
@@ -123,7 +167,7 @@ function rankFormatter(cell, row, rowIndex, formatExtraData) {
   else if (row.splitExchange) {
     return (
       <div class="btn-toolbar">
-         <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
+         <Button bsStyle="success" pullLeft fill type="submit" onClick={() => { this.directacceptoffer(row)}}>
           Accept Offer
                      </Button>
         <Button bsStyle="info"  fill type="submit" onClick={this.onsplitoffer}>
@@ -134,17 +178,40 @@ function rankFormatter(cell, row, rowIndex, formatExtraData) {
        
                 
     )
+  }else{
+    return (
+    <div class="btn-toolbar">
+    <Button bsStyle="success" pullLeft fill type="submit" onClick={() => { this.directacceptoffer(row)}}>
+     Accept Offer
+                </Button></div>)
+  }
+      }
+      
+    
+        }
+}
+  
+
+];
+ 
+ directacceptoffer=(row) => {
+    console.log(row)
+    let transaction=this.settransactionval(row)
+    DirectExchangeService.acceptOffer(transaction).then((res) => {
+      // this.setState({ offers: res.data });
+      // console.log("**" + this.state.offers)
+      console.log("**" + res.data)
+    });
+
   }
 
-
-}
-function onacceptoffer(row) {
+ settransactionval=(row) => {
     console.log(row)
     let transaction = {
       id:row.id,
       userName: row.user.userName,
       nickName: row.user.nickName,
-      offerAccepter:"advik.shinde@gmail.com",
+      offerAccepter:localStorage.getItem("userId"),
       sourceCountry: row.sourceCountry,
       sourceCurrency: row.sourceCurrency,
       remitAmount: row.remitAmount,
@@ -153,7 +220,7 @@ function onacceptoffer(row) {
       exchangeRate: row.exchangeRate,
       expirationDate: row.expirationDate,
       counteroffers: row.counteroffers,
-      newRemitAmount: row.newRemitAmount,
+      newRemitAmount: this.state.newremitAmount,
       splitExchange: row.splitExchange,
       offerStatus:"InTransaction",
       // split_exchange_partie1:row.split_exchange_partie1,
@@ -166,17 +233,20 @@ function onacceptoffer(row) {
       
 
     }
-
+   
      console.log('transaction => ' + JSON.stringify(transaction));
+      return transaction
+  }
 
-    DirectExchangeService.startExchaange(transaction).then((res) => {
+   counteroffer=() => {
+    let transaction=this.settransactionval(this.state.rowval)
+    DirectExchangeService.counterOffer(transaction).then((res) => {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
       console.log("**" + res.data)
     });
 
   }
-class AllOffers extends Component {
 
   constructor(props) {
     super(props)
@@ -184,67 +254,34 @@ class AllOffers extends Component {
     this.state = {
 
       offers: [],
-      dummy:''
+      rowval:[],
+      newremitAmount:'0.00'
     }
 
 
   }
 
+handleClose = () => {
+    this.setState({
+      show: false,
+    });
+    this.counteroffer()
+  };
 
-
-  expandRow = {
-    renderer:
-
-      row => {
-        if (row.counteroffers & row.splitExchange) {
-          return (
-            <div> <Button bsStyle="info" pullLeft fill type="submit" onClick={this.oncounteroffer}>
-              Counter Offer
-                    </Button>
-                    &nbsp;
-              <Button bsStyle="info" pullLeft fill type="submit" onClick={this.onsplitoffer}>
-                Split Offer
-                    </Button>
-                   &nbsp;
-              <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onacceptoffer}>
-                Accept Offer
-               
-                     </Button></div>
-          )
-        }
-        else if (row.counteroffers) {
-          return (
-            <div> <Button bsStyle="info" pullLeft fill type="submit" onClick={this.oncounteroffer}>
-              Counter Offer
-                    </Button>
-              <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onsplitoffer}>
-                Accept Offer
-                     </Button></div>
-          )
-        }
-
-        else if (row.splitExchange) {
-          return (
-            <div>
-              <Button bsStyle="success" pullLeft fill type="submit" onClick={this.onacceptoffer}>
-                Accept Offer
-                     </Button></div>
-          )
-        }
-
-        // if (row.splitExchange) {
-        //   return (
-        //     <div> <Button bsStyle="info" pullRight fill type="submit" onClick={this.onsplitoffer}>
-        //       Split Offer
-        //             </Button></div>
-        //   )
-        // }
-
-
-      }
+  handleShow = () => {
+    this.setState({
+      show: true,
+    });
   };
 
 
+
+setNewRemitAmount = (evt) => {
+    this.setState({
+      newremitAmount: evt.target.value,
+    });
+    
+  };
   componentDidMount() {
 
     DirectExchangeService.listAllExchangeOffer().then((res) => {
@@ -273,12 +310,10 @@ class AllOffers extends Component {
 
                   <BootstrapTable
                     striped
-                    hover
                     pagination={paginationFactory()}
-                    expandRow={true}
                     keyField='id'
                     data={this.state.offers}
-                    columns={columns}
+                    columns={this.columns}
                     filter={ filterFactory()}
                     // expandRow={this.expandRow}
                     expandComponent={ this.expandComponent }
@@ -286,6 +321,35 @@ class AllOffers extends Component {
 
                 }
               />
+
+               <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>CounterOffer</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="form-group">
+              <label htmlFor="exampleInputEmail1">Enter New Remit Amount</label>
+              <input
+                onChange={this.setNewRemitAmount}
+                type="text"
+                className="form-control"
+                id="newremitamount"
+                aria-describedby="emailHelp"
+                placeholder="Enter New Remit Amount"
+                value={this.state.newremitAmount}
+              />
+            </div>
+            </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+       
+
+
             </Col>
 
 

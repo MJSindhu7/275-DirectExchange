@@ -1,7 +1,6 @@
 import Dashboard from "views/Dashboard.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import Icons from "views/Icons.jsx";
-import Notifications from "views/Notifications.jsx";
 import AllOffers from "views/AllOffers";
 import MyOfferPage from "views/MyOfferPage";
 import PostOffer from "views/PostOffer";
@@ -76,14 +75,7 @@ const dashboardRoutes = [
     icon: "pe-7s-note2",
     component: MyOfferPage,
     layout: "/admin",
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin",
-  },
+  }
 ];
 
 export default dashboardRoutes;
