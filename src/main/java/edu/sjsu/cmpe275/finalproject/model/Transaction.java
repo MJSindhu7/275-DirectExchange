@@ -15,24 +15,6 @@ import javax.persistence.Table;
 public class Transaction {
 
 	
-//	counteroffers: true
-//	destinationCountry: "USA"
-//	destinationCurrency: "USD"
-//	exchangeRate: 72.02
-//	expirationDate: "2020-11-09"
-//	id: 1
-//	newRemitAmount: 0
-//	nickName: "Pragati"
-//	offerAccepter: "advik.shinde@gmail.com"
-//	offerStatus: "InTransaction"
-//	remitAmount: 2200
-//	sourceCountry: "India"
-//	sourceCurrency: "INR"
-//	splitExchange: true
-//	split_exchange_partie1: ""
-//	split_exchange_partie2: ""
-//	split_exchange_partie3: ""
-//	userName: "pragati.shinde@gmail.com"
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -57,9 +39,6 @@ public class Transaction {
 	@Column(name = "source_currancy")
 	private String sourceCurrency;
 
-	@Column(name = "remit_amount")
-	private double remitAmount;
-
 	@Column(name = "destination_country")
 	private String destinationCountry;
 
@@ -76,8 +55,16 @@ public class Transaction {
 	private boolean counteroffers = true;
 
 
+	@Column(name = "remit_amount_source")
+	private double remitAmountSource=0.00;
+	
+	@Column(name = "remit_amount_destination")
+	private double remitAmountDestination=0.00;
+	
 	@Column(name = "new_remit_amount")
-	private double newRemitAmount;
+	private double newRemitAmount=0.00;
+	
+	
 
 	@Column(name = "split_exchange")
 	private boolean splitExchange = true;
@@ -92,11 +79,22 @@ public class Transaction {
 	private String splitExchangePartie3;
 
 	
+	
 	@Column(name = "offer_status")
 	private String offerStatus;
 
 	@Column(name = "service_fee")
-	private float serviceFee;
+	private double serviceFee=0.0005;
+	
+	@Column(name = "remit_amount_split1")
+	private double remitAmountSplit1;
+	
+	@Column(name = "remit_amount_split2")
+	private double remitAmountSplit2;
+ 	
+ 	@Column(name = "remit_amount_split3")
+	private double remitAmountSplit3;
+ 	
 
 	public Long getId() {
 		return id;
@@ -106,8 +104,6 @@ public class Transaction {
 		this.id = id;
 	}
 
-	
-	
 
 	public String getUserName() {
 		return userName;
@@ -117,22 +113,8 @@ public class Transaction {
 		this.userName = userName;
 	}
 
-	public double getRemitAmount() {
-		return remitAmount;
-	}
 
-	public void setRemitAmount(double remitAmount) {
-		this.remitAmount = remitAmount;
-	}
-
-	public double getNewRemitAmount() {
-		return newRemitAmount;
-	}
-
-	public void setNewRemitAmount(double newRemitAmount) {
-		this.newRemitAmount = newRemitAmount;
-	}
-
+	
 	public String getNickName() {
 		return nickName;
 	}
@@ -158,7 +140,6 @@ public class Transaction {
 		this.destinationCountry = destinationCountry;
 	}
 
-	
 
 	public float getExchangeRate() {
 		return exchangeRate;
@@ -244,11 +225,11 @@ public class Transaction {
 	}
 
 	
-	public float getServiceFee() {
+	public double getServiceFee() {
 		return serviceFee;
 	}
 
-	public void setServiceFee(float serviceFee) {
+	public void setServiceFee(double serviceFee) {
 		this.serviceFee = serviceFee;
 	}
 
@@ -267,5 +248,56 @@ public class Transaction {
 	public void setOfferAccepter(String offerAccepter) {
 		this.offerAccepter = offerAccepter;
 	}
+
+	public double getRemitAmountSource() {
+		return remitAmountSource;
+	}
+
+	public void setRemitAmountSource(double remitAmountSource) {
+		this.remitAmountSource = remitAmountSource;
+	}
+
+	public double getRemitAmountDestination() {
+		return remitAmountDestination;
+	}
+
+	public void setRemitAmountDestination(double remitAmountDestination) {
+		this.remitAmountDestination = remitAmountDestination;
+	}
+
+	public double getNewRemitAmount() {
+		return newRemitAmount;
+	}
+
+	public void setNewRemitAmount(double newRemitAmount) {
+		this.newRemitAmount = newRemitAmount;
+	}
+
+	public double getRemitAmountSplit1() {
+		return remitAmountSplit1;
+	}
+
+	public void setRemitAmountSplit1(double remitAmountSplit1) {
+		this.remitAmountSplit1 = remitAmountSplit1;
+	}
+
+	public double getRemitAmountSplit2() {
+		return remitAmountSplit2;
+	}
+
+	public void setRemitAmountSplit2(double remitAmountSplit2) {
+		this.remitAmountSplit2 = remitAmountSplit2;
+	}
+
+	public double getRemitAmountSplit3() {
+		return remitAmountSplit3;
+	}
+
+	public void setRemitAmountSplit3(double remitAmountSplit3) {
+		this.remitAmountSplit3 = remitAmountSplit3;
+	}
+
+
+	
 
 }

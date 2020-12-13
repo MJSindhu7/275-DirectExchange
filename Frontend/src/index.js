@@ -26,15 +26,17 @@ import "./assets/css/animate.min.css";
 import "./assets/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
 import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
+import AdminNavbarLinks from "./components/Navbars/AdminNavbarLinks.jsx";
 
 import AdminLayout from "layouts/Admin.jsx";
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-       <Route path='/login' render={(props) => <Login {...props} />} /> 
-     <Redirect from="/admin" to="/admin/dashboard" />
+      <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+      <Route path="/login" render={(props) => <Login {...props} />} />
+      <Route component={AdminNavbarLinks} />;
+      <Redirect from="/admin" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

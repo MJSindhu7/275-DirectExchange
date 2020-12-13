@@ -1,8 +1,6 @@
-
 import Dashboard from "views/Dashboard.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import Icons from "views/Icons.jsx";
-import Notifications from "views/Notifications.jsx";
 import AllOffers from "views/AllOffers";
 import MyOfferPage from "views/MyOfferPage";
 import PostOffer from "views/PostOffer";
@@ -17,30 +15,30 @@ const dashboardRoutes = [
     name: "Dashboard",
     icon: "pe-7s-graph",
     component: Dashboard,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/user",
     name: "User Profile",
     icon: "pe-7s-user",
     component: UserProfile,
-    layout: "/admin"
+    layout: "/admin",
   },
-  
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   icon: "pe-7s-user",
-  //   component: Login,
-  //   layout: "/admin"
-  // }
-  
+
+  /*{
+    path: "/login",
+    name: "Login",
+    icon: "pe-7s-user",
+    component: Login,
+    layout: "/admin",
+  },*/
+
   {
     path: "/bankaccount",
     name: "Bank",
     icon: "pe-7s-user",
     component: BankAccountSetup,
-    layout: "/admin"
+    layout: "/admin",
   },
 
   {
@@ -48,42 +46,35 @@ const dashboardRoutes = [
     name: "Transfer Money",
     icon: "pe-7s-user",
     component: BankTransaction,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/postoffer",
     name: "Post Offer",
     icon: "pe-7s-user",
     component: PostOffer,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/alloffers",
     name: "All Offers",
     icon: "pe-7s-note2",
     component: AllOffers,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/exchangerates",
     name: "Prevailing Rates",
     icon: "pe-7s-note2",
     component: ExhangeRates,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/myoffers",
     name: "My Offers",
     icon: "pe-7s-note2",
     component: MyOfferPage,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
+    layout: "/admin",
   }
 ];
 

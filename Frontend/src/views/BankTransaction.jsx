@@ -1,140 +1,162 @@
 import React, { Component } from "react";
-import {
-	Grid,
-	Row,
-	Col
-} from "react-bootstrap";
-
-import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import Button from "components/CustomButton/CustomButton.jsx";
+import { Grid, Row, Col, Table } from "react-bootstrap";
+import Card from "components/Card/Card.jsx";
 import DirectExchangeService from '../services/DirectExchangeService';
+import Button from "components/CustomButton/CustomButton.jsx";
+import BootstrapTable from "react-bootstrap-table-next";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import { Link } from "react-router-dom";
+
 
 class BankTransaction extends Component {
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			// step 2
-			id: this.props.match.params.id,
-			bankName: '',
-			country: '',
-			accountNumber: '',
-			ownerName: '',
-			address: '',
-			currency: '',
-			sendingOrReceiving: '',
-			sending: '',
-			receiving: '',
-			both: '',
-			allbankacc: '',
-			bankaccounts: []
+	columns = [
+		{
+		  text: "Id",
+		  dataField: "id",
+		  sortable: true
+		},
+		{
+		  text: "Source Country",
+		  dataField: "sourceCountry",
+		  sortable: true
+		},
+		{
+		  text: "Source Currancye",
+		  dataField: "sourceCurrency",
+		  sortable: true
+		},
+		{
+		  text: "Destination Country",
+		  dataField: "destinationCountry",
+		  sortable: true
+		},
+		{
+		  text: "Destination Currancy",
+		  dataField: "destinationCurrency",
+		  sortable: true
 		}
-	}
-
-	// step 3
-	componentDidMount() {
-
-		DirectExchangeService.getBankAccountsByUser("de@gmail.com").then((res) => {
-			this.setState({ bankaccounts: res.data });
-
-			console.log("**" + JSON.stringify(this.state.bankaccounts))
+		,
+		{
+		  text: "Exchange Rate",
+		  dataField: "exchangeRate",
+		  sortable: true,
+		  //right: true
+		},
+		{
+		  text: "Source Remit Amount",
+		  dataField: "remitAmountSource",
+		  sortable: true,
+		  //filter: textFilter()
+		  //right: true
+		}
+		,{
+			text: "Destination Remit Amount",
+			dataField: "remitAmountDestination",
+			sortable: true,
+			//filter: textFilter()
+			//right: true
+		  }
+		  ,
+		{
+		  text: "Expiration Date",
+		  dataField: "expirationDate",
+		  sortable: true,
+		  //right: true
+		},
+	
+		{
+		  text: "Actions",
+		  dataField: "action",
+		  isDummyField: true,
+		  headerStyle: () => {
+			return { width: "25%" };
+		  }
+		  ,
+		  formatter: (cell, row, rowIndex, formatExtraData) => {
+	
+			if (row.offerStatus == "InTransaction") {
+			  return (
+				<div class="btn-toolbar">
+				  <Button bsStyle="info"  fill type="submit" onClick={() => { this.counterofferresponse("transfered")}}>
+					Transfer Money
+						</Button>
+				</div>
+			  )
+			  }
+	
+	
+	
+		  }
+		}
+	
+	  ];
+	  constructor(props) {
+		super(props)
+	
+		this.state = {
+	
+			transactions: []
+		}
+	  }
+	
+	  counterofferresponse=(action) => {
+		let userid=localStorage.getItem("userId")
+		DirectExchangeService.exchangeaction(userid,action).then((res) => {
+		  // this.setState({ offers: res.data });
+		 //  console.log("**" + this.state.offers)
+		  console.log("**" + res.data)
 		});
-
-		
-
-
-	}
-	saveOrUpdateBankAcc = (e) => {
-		// e.preventDefault();
-		// let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber, ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, sendingOrReceiving: this.state.sendingOrReceiving, userName: "DE@gmail.com" };
-		// console.log('bankaccount => ' + JSON.stringify(bankaccount));
-
-		// DirectExchangeService.addBankAccount(bankaccount).then(res => {
-		// 	this.props.history.push('/dashboard');
-		// });
-	}
-
-
-	cancel() {
-		this.props.history.push('/dashboard');
-	}
-
-	getTitle() {
-		return <h3 className="text-center">Register Bank Account</h3>
-
-	}
-	render() {
-
+	
+	  }
+	
+	  componentDidMount() {
+	
+		DirectExchangeService.listUsersTransactions(localStorage.getItem("userId"),"InTransaction").then((res) => {
+		  this.setState({ transactions: res.data });
+		  console.log("**" + this.state.transactions)
+		});
+	
+	  }
+	  render() {
 		return (
-
-			<div className="content">
-				<Grid fluid>
-					<Row>
-						<Col md={8}>
-							<Card
-								title="Make Transfer"
-								content={
-									<form>
-
-										<span className="text-small pr-1">DirectExchange Bank Account</span>
-
-	{/* <ul>{ this.state.bankaccounts.map((item, index) => (<li key={index}>{item.bankName}</li>)) }</ul>
-	 */}
-										<select id="debankacc" className="form-control" onChange={(event) => this.setState({ allbankacc: event.target.value })}>
-											<option selected>Choose...</option>
-											{
-
-												this.state.bankaccounts.map((item, index) => <option key={index}>{item.bankName}</option>)
-
-											}
-										</select>
-
-										<FormInputs
-											ncols={["col-md-4", "col-md-4"]}
-											properties={[
-												{
-													label: "Amount",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "Amount",
-													value: this.state.bankName,
-													onChange: e => this.setState({ bankName: e.target.value })
-												},
-												{
-													label: "Country",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "Country",
-													value: this.state.country,
-													onChange: e => this.setState({ country: e.target.value })
-												}
-											]}
-										/>
-										
-									<div className="btn-toolbar">
-
-									
-										<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>
-											Cancel
-                    </Button>
-						
-										<Button bsStyle="info" pullRight fill type="submit" onClick={this.saveOrUpdateBankAcc}>
-											Transfer Money
-                    </Button>
-					</div>
-										<div className="clearfix" />
-									</form>
-								}
-							/>
-						</Col>
-
-					</Row>
-				</Grid>
-			</div>
-		)
-
+		  <div className="content">
+			<Grid fluid>
+			  <Row>
+	
+	
+				<Col md={16}>
+				  <Card
+					title="All Transactions"
+					content={
+	
+					  <BootstrapTable
+						striped
+						hover
+						pagination={paginationFactory()}
+						expandRow={true}
+						keyField='id'
+						data={this.state.transactions}
+						columns={this.columns}
+						filter={filterFactory()}
+						// expandRow={this.expandRow}
+						expandComponent={this.expandComponent}
+					  />
+	
+					}
+				  />
+	
+	
+				</Col>
+	
+	
+			  </Row>
+			</Grid >
+		  </div >
+		);
+	  }
 	}
-}
-
+	
 export default BankTransaction

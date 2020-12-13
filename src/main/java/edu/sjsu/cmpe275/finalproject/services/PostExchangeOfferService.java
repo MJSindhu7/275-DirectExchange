@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import edu.sjsu.cmpe275.finalproject.model.Offers;
 import edu.sjsu.cmpe275.finalproject.model.Transaction;
@@ -52,22 +53,28 @@ public class PostExchangeOfferService {
 			postexchangeofferrepository.deleteById(id);
 		}
 		
-		public String updateStatus(Transaction trans,String status) {
+		
+		public int updateStatus(Transaction trans,String status) {
 
 			try {
 
-				Optional<Offers> _offer = findOfferById(trans.getId());
+				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getId());
 				Offers _postOffer = null;
 				if (_offer.isPresent()) {
 					_postOffer = _offer.get();
 					_postOffer.setOfferStatus(status);
-					_postOffer = saveExchangeOffer(_postOffer);
+					postexchangeofferrepository.save(_postOffer);
+					 //offerservice.updateOfferStaatus(trans.getId(),status);
+					
 				}
 
-				return "Ok";
+				return 0;
 			} catch (Exception e) {
 				System.err.println(e);
-				return "Error";
+				return 1;
 			}
 		}
+		
+		
+		
 	}

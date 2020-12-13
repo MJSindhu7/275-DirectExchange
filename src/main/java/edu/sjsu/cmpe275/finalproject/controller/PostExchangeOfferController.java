@@ -64,6 +64,19 @@ public class PostExchangeOfferController {
 		}
 		return new ResponseEntity<List<Offers>>(postExchangeOffer, HttpStatus.OK);
 	}
+	
+	@GetMapping("/getofferbyid/{id}")
+	public ResponseEntity<Optional<Offers>> getOfferByID(
+			@PathVariable(required = true, name = "id") long id) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.findOfferById(id);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+		}
 
 	@PostMapping("/saveoffer")
 	public ResponseEntity<Offers> addExchnageOffer(@RequestBody Offers offer) {
