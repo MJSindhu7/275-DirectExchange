@@ -17,7 +17,7 @@ CREATE TABLE bankaccount (
 	address VARCHAR(255) NOT NULL, 
 	currency VARCHAR(255), 
 	sending_or_receiving VARCHAR(255),
-	account_balance DECIMAL(9,4) NOT NULL DEFAULT 10000.0000,
+	account_balance DECIMAL(9,2) NOT NULL,
 	PRIMARY KEY (account_number));
 
 CREATE TABLE offers (
@@ -25,15 +25,15 @@ CREATE TABLE offers (
 	user_name VARCHAR(255) NOT NULL, 
 	source_country VARCHAR(255) NOT NULL, 
 	source_currency VARCHAR(255) NOT NULL,
-	remit_amount_source DECIMAL(9,4) NOT NULL,
-	remit_amount_destination DECIMAL(9,4) NOT NULL,
+	remit_amount_source DECIMAL(9,2) NOT NULL,
+	remit_amount_destination DECIMAL(9,2) NOT NULL,
 	destination_country VARCHAR(255) NOT NULL, 
 	destination_currency VARCHAR(255) NOT NULL, 
-	exchange_rate DECIMAL(6,2) NOT NULL,
+	exchange_rate DECIMAL(6,4) NOT NULL,
 	expiration_date DATE NOT NULL,
 	counter_offers BOOLEAN NOT NULL DEFAULT 1,
 	split_exchange BOOLEAN NOT NULL DEFAULT 1, 
-	new_remit_amount DECIMAL(9,4),
+	new_remit_amount DECIMAL(9,2),
 	offer_status VARCHAR(255) NOT NULL,
 	PRIMARY KEY (id));
 
@@ -45,24 +45,34 @@ CREATE TABLE transaction (
 	nick_name VARCHAR(255), 
 	source_country VARCHAR(255) NOT NULL,
  	source_currancy VARCHAR(255) NOT NULL, 
- 	remit_amount_source DECIMAL(9,4) NOT NULL,
- 	remit_amount_destination DECIMAL(9,4) NOT NULL,
+ 	remit_amount_source DECIMAL(9,2) NOT NULL,
+ 	remit_amount_destination DECIMAL(9,2) NOT NULL,
  	offer_accepter VARCHAR(255),
  	destination_country VARCHAR(255) NOT NULL, 
  	destination_currancy VARCHAR(255) NOT NULL,
- 	exchange_rate DECIMAL(6,2) NOT NULL,
+ 	exchange_rate DECIMAL(6,4) NOT NULL,
  	expiration_date DATE NOT NULL, 
  	counter_offers BOOLEAN NOT NULL DEFAULT 1, 
- 	new_remit_amount DECIMAL(9,4), 
+ 	new_remit_amount DECIMAL(9,2), 
  	split_exchange BOOLEAN NOT NULL DEFAULT 1, 
  	split_exchange_partie1 VARCHAR(255),
  	split_exchange_partie2 VARCHAR(255),
  	split_exchange_partie3 VARCHAR(255), 
- 	remit_amount_split1 DECIMAL(9,4),
- 	remit_amount_split2 DECIMAL(9,4),
- 	remit_amount_split3 DECIMAL(9,4),
+ 	remit_amount_split1 DECIMAL(9,2),
+ 	remit_amount_split2 DECIMAL(9,2),
+ 	remit_amount_split3 DECIMAL(9,2),
  	offer_status VARCHAR(255),
  	service_fee DECIMAL(6,2) ,
  	PRIMARY KEY (id));
 
+CREATE TABLE rates (
+	curr VARCHAR(10) NOT NULL,
+	curr_usd DECIMAL(6,4),
+	usd_curr DECIMAL(6,4),
+	PRIMARY KEY (curr));
 
+insert into rates(curr,curr_usd,usd_curr) values ("INR",0.014,73.74);
+insert into rates(curr,curr_usd,usd_curr) values ("EUR",1.21,0.83);
+insert into rates(curr,curr_usd,usd_curr) values ("GBP",1.32,0.76);
+insert into rates(curr,curr_usd,usd_curr) values ("RMB",0.15,6.55);
+insert into rates(curr,curr_usd,usd_curr) values ("USD",1.00,1.00);

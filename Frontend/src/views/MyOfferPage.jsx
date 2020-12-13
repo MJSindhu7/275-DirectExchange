@@ -201,7 +201,7 @@ class MyOfferPage extends Component {
               />
  <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header editbutton>
-            <Modal.Title>Update Offert</Modal.Title>
+            <Modal.Title>Update Offer</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <UpdateOffer rowval={this.state.rowval}/>

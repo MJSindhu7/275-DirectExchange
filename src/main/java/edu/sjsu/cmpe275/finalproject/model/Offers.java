@@ -192,12 +192,13 @@ public class Offers {
 
 	@Override
 	public String toString() {
-		return "Offers [id=" + id + ", user=" + user + ", sourceCountry=" + sourceCountry
-				+ ", sourceCurrency=" + sourceCurrency + ", remitAmount=" + remitAmountSource + ", destinationCountry="
-				+ destinationCountry + ", destinationCurrency=" + destinationCurrency + ", exchangeRate=" + exchangeRate
-				+ ", expirationDate=" + expirationDate + ", counteroffers=" + counteroffers + ", newRemitAmount="
-				+ newRemitAmount + ", splitExchange=" + splitExchange + ", offerStatus="
-				+ offerStatus + "]";
+		return "Offers [id=" + id + ", user=" + user + ", sourceCountry=" + sourceCountry + ", sourceCurrency="
+				+ sourceCurrency + ", remitAmountSource=" + remitAmountSource + ", remitAmountDestination="
+				+ remitAmountDestination + ", destinationCountry=" + destinationCountry + ", destinationCurrency="
+				+ destinationCurrency + ", exchangeRate=" + exchangeRate + ", expirationDate=" + expirationDate
+				+ ", counteroffers=" + counteroffers + ", newRemitAmount=" + newRemitAmount + ", splitExchange="
+				+ splitExchange + ", offerStatus=" + offerStatus + "]";
 	}
+
 	
 }

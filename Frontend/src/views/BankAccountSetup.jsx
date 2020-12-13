@@ -9,6 +9,7 @@ import {
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import Select from 'react-select';
 import DirectExchangeService from '../services/DirectExchangeService';
 
 class BankAccountSetup extends Component {
@@ -24,6 +25,8 @@ class BankAccountSetup extends Component {
 			ownerName: '',
 			address: '',
 			currency: '',
+			primaryCurrency: ['USD', 'INR', 'EUR', 'GBP', 'RMB'],
+			listCountries: ['Republic of India','United States of America', 'United Kingdom','People\'s Republic of China','Germany','France','Portugal','Spain','Italy'], 
 			sendingOrReceiving: '',
 			userName: localStorage.getItem("userId"),
 			sendOrRecMap : ['Sending','Receiving','Both'],			 
@@ -36,13 +39,20 @@ class BankAccountSetup extends Component {
 	}
 	saveOrUpdateBankAcc = (e) => {
 		e.preventDefault();
-		let bankaccount = { bankName: this.state.bankName, country: this.state.country, accountNumber: this.state.accountNumber,
-			 ownerName: this.state.ownerName, address: this.state.address, currency: this.state.currency, 
-			 sendingOrReceiving: this.state.sendingOrReceiving, user:{userName: localStorage.getItem("userId")}};
+		let bankaccount = { 
+			bankName: this.state.bankName, 
+			country: this.state.country, 
+			accountNumber: this.state.accountNumber,
+			ownerName: this.state.ownerName, 
+			address: this.state.address, 
+			currency: this.state.currency,
+      		sendingOrReceiving: this.state.sendingOrReceiving, 
+			user:{userName: localStorage.getItem("userId")}};
+
 		console.log('bankaccount => ' + JSON.stringify(bankaccount));
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
-			this.props.history.push('/admin/dashboard');
+			this.props.history.push('/admin/bankaccount');
 		});
 	}
 
@@ -56,7 +66,18 @@ class BankAccountSetup extends Component {
 
 	}
 	render() {
-
+		 var curr = [];
+   			this.state.primaryCurrency.forEach(function (element) {
+   	   		curr.push({ label: element, value: element })
+		});
+		 var countries = [];
+   			this.state.listCountries.forEach(function (element) {
+   	   		countries.push({ label: element, value: element })
+		});
+		 var srb = [];
+   			this.state.sendOrRecMap.forEach(function (element) {
+   	   		srb.push({ label: element, value: element })
+		});
 		return (
 						<div className="content">
 				<Grid fluid>
@@ -78,38 +99,14 @@ class BankAccountSetup extends Component {
 													onChange: e => this.setState({ bankName: e.target.value })
 												},
 												{
-													label: "Country",
-													type: "text",
-													bsClass: "form-control",
-													placeholder: "Country",
-													value: this.state.country,
-													onChange: e => this.setState({ country: e.target.value })
-												}
-											]}
-										/>
-										<FormInputs
-											ncols={["col-md-4", "col-md-4"]}
-											properties={[
-												{
 													label: "Account number",
 													type: "text",
 													bsClass: "form-control",
 													placeholder: "Account number ",
 													value: this.state.accountNumber,
 													onChange: e => this.setState({ accountNumber: e.target.value })
-												},
-												{
-													
-													label: "Primary Currency",
-													type: "Dropdown",
-													bsClass: "form-control",
-													placeholder: "Primary Currency",
-													value: this.state.currency,
-													onChange: e => this.setState({ currency: e.target.value })
-
 												}
 											]}
-
 										/>
 										<FormInputs
 											ncols={["col-md-4", "col-md-4"]}
@@ -134,17 +131,36 @@ class BankAccountSetup extends Component {
 												}
 											]}
 										/>
-
-											<span className="text-small pr-1">Sending / Receiving / Both</span>
-
-										<select id="debankacc" className="form-control" onChange={(event) => this.setState({ sendingOrReceiving: event.target.value })}>
-											<option selected>Choose...</option>
-											{
-
-												this.state.sendOrRecMap.map((item, index) => <option key={index}>{item}</option>)
-
-											}
-										</select>
+										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
+											<span>Country</span>
+											<Select
+											class= "form-control"
+											name="Country"
+											options={countries}
+											defaultValue={{ label: "Select your Country ", value: 0 }}
+											onChange={(event) => this.setState({ country: event.label })}
+											/>
+										</div>
+										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
+										<span>Primary Currency</span>
+											<Select
+											class= "form-control"
+											name="Primary Currency"
+											options={curr}
+											defaultValue={{ label: "Select Primary Currency ", value: 0 }}
+											onChange={(event) => this.setState({ currency: event.label })}
+											/>
+										</div>
+										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
+										<span>Sending or Receiving or Both</span>
+											<Select
+											class= "form-control"
+											name="Send/Receive/Both"
+											options={srb}
+											defaultValue={{ label: "Select Option ", value: 0 }}
+											onChange={(event) => this.setState({ sendingOrReceiving: event.label })}
+											/>
+										</div>
 										<div className="btn-toolbar">
 												
 											<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>

@@ -4,6 +4,8 @@ const DIRECT_EXCHANGE_BANK_URL = "/bank";
 const DIRECT_EXCHANGE_Offers_URL = "/offers";
 const DIRECT_EXCHANGE_Transaction_URL = "/exchange";
 const DIRECT_EXCHANGE_Users_URL = "/user";
+const DIRECT_EXCHANGE_Rates_URL = "/rates";
+
 class DirectExchangeService {
   addBankAccount(bankacount) {
     console.log(bankacount);
@@ -49,6 +51,10 @@ class DirectExchangeService {
   listUsersTransactions(username,status) {
     console.log(username);
     return axios.get(DIRECT_EXCHANGE_Transaction_URL + "/transactionstatus/" + username+"/"+status);
+  }
+
+  listAllCurrecyRates() {
+    return axios.get(DIRECT_EXCHANGE_Rates_URL + "/getall");
   }
 
   acceptOffer(transaction) {
