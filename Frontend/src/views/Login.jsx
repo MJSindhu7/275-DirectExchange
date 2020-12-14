@@ -19,14 +19,10 @@ import {
   FacebookLoginButton,
   GoogleLoginButton,
 } from "react-social-login-buttons";
-//import styles from './login.css';
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();
-
-//const userRef = firestore.doc(`users/${user.uid}`);
-//const snapshot = userRef.get();
 
 const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
@@ -42,6 +38,7 @@ class Login extends Component {
     signUpEmail: "",
     signUpPwd: "",
     signInShow: false,
+    temp: "",
     //user: null,
     test1: [],
   };
@@ -72,6 +69,7 @@ class Login extends Component {
   signUp = () => {
     console.log(this.state.signUpEmail);
     console.log(this.state.signUpPwd);
+    console.log(this.state.nickname);
     firebase
       .auth()
       .createUserWithEmailAndPassword(
@@ -89,23 +87,32 @@ class Login extends Component {
               show: false,
             });
             let userSignUp = {
-              userName: this.state.email,
+              userName: this.state.signUpEmail,
               nickName: this.state.nickname,
               rating: 0,
             };
-            console.log("user => " + JSON.stringify(userSignUp));
-
-            localStorage.setItem("userId", this.state.email);
-
-            DirectExchangeService.addUsertoDirectExchange(userSignUp).then(
-              (res) => {
-                //this.props.history.push("/dashboard");
+            localStorage.setItem("userId", this.state.signUpEmail);
+            try {
+              let res = await DirectExchangeService.getNickName(
+                localStorage.getItem("userId")
+              );
+              if (res) {
+                this.setState({
+                  temp: res.data,
+                });
               }
-            );
-            this.state.email = "";
-            this.state.nickname = "";
-            this.state.password = "";
-            window.alert("SignUp Successful, Verification Email Snet");
+              if (this.state.temp == "") {
+                DirectExchangeService.addUsertoDirectExchange(
+                  userSignUp
+                ).then((res) => {});
+                this.state.signUpEmail = "";
+                this.state.nickname = "";
+                this.state.signUpPwd = "";
+                window.alert("SignUp Successful, Verification Email Snet");
+              }
+            } catch (err) {
+              console.log(err);
+            }
           })
           .catch((error) => {
             var errorCode = error.code;
@@ -134,6 +141,7 @@ class Login extends Component {
         console.log("Success");
         this.state.email = "";
         this.state.password = "";
+        alert("Successfully signed in");
         this.props.history.push("/admin/dashboard");
       })
       .catch((error) => {
@@ -157,15 +165,36 @@ class Login extends Component {
         // An error happened.
       });
   };
-
+  reset = () => {
+    this.setState({
+      email: "",
+    });
+    this.setState({
+      password: "",
+    });
+  };
   fromEmail = (userEmail, userName) => {
     {
-      DirectExchangeService.addUsertoDirectExchange({
-        userName: userEmail,
-        nickName: userName,
-      }).then((res) => {
-        this.props.history.push("/admin/dashboard");
-      });
+      DirectExchangeService.getNickName(localStorage.getItem("userId"))
+        .then((res) => {
+          this.state.temp = res.data;
+        })
+        .catch(function (error) {
+          return null;
+        });
+      if (this.state.temp == "") {
+        DirectExchangeService.addUsertoDirectExchange({
+          userName: userEmail,
+          nickName: userName,
+          rating: 0,
+        })
+          .then((res) => {
+            this.props.history.push("/admin/dashboard");
+          })
+          .catch(function (error) {
+            return null;
+          });
+      }
     }
   };
   changeHandlerEmail = (evt) => {
@@ -178,6 +207,11 @@ class Login extends Component {
       nickname: evt.target.value,
     });
   };
+  changeHandlerSignUpPwd = (evt) => {
+    this.setState({
+      signUpPwd: evt.target.value,
+    });
+  };
 
   changeHandlerPwd = (evt) => {
     this.setState({
@@ -190,18 +224,6 @@ class Login extends Component {
     });
   };
 
-  changeHandlerPwd = (evt) => {
-    this.setState({
-      password: evt.target.value,
-    });
-  };
-
-  changeHandlerSignUpPwd = (evt) => {
-    this.setState({
-      signUpPwd: evt.target.value,
-    });
-  };
-
   changeHandlerSignUpEmail = (evt) => {
     this.setState({
       signUpEmail: evt.target.value,
@@ -211,8 +233,6 @@ class Login extends Component {
   render() {
     const { user, signOut, signInWithGoogle } = this.props;
     const { userFB, signOutFB, signInWithFacebook } = this.props;
-    let userEmail, userName;
-    let userEmailSignUp;
     return (
       <div className="Login" style={{ margin: "auto", width: "30%" }}>
         <div className="row"></div>
@@ -242,9 +262,9 @@ class Login extends Component {
           />
         </div>
 
-        <div class="btn-toolbar">
-          <Button variant="secondary" onClick={this.handleCloseSignIn}>
-            Close
+        <div className="btn-toolbar">
+          <Button variant="secondary" onClick={this.reset}>
+            Reset
           </Button>
           <Button variant="primary" onClick={this.signIn}>
             Sign In
