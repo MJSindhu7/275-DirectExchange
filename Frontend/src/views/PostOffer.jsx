@@ -35,6 +35,7 @@ class PostOffer extends Component {
       currency: ['USD', 'INR', 'EUR', 'GBP', 'RMB'],
       listCountries: ['Republic of India','United States of America', 'United Kingdom','People\'s Republic of China','Germany','France','Portugal','Spain','Italy'], 
       rates : [],
+      exchangeRates :[],
       customRate: true,
     }
   }
@@ -44,7 +45,18 @@ class PostOffer extends Component {
       this.setState({ bankaccounts: res.data });
       console.log("**" + this.state.offers)
     });
+
+    DirectExchangeService.listAllCurrecyRates().then((res) => {
+      var er = [];
+      this.setState({ rates: res.data });
+      res.data.map((value,key) => {
+      er.push(value)
+      })
+      this.setState({ exchangeRates: er });   
+    });
+
   }
+
   saveExchangeOffer = (e) => {
     e.preventDefault();
     let offer = {
@@ -101,18 +113,11 @@ class PostOffer extends Component {
   }
 
   getRates() {
-    DirectExchangeService.listAllCurrecyRates().then((res) => {
-      this.setState({ rates: res.data });
-    });
-    var exchangeRates = [];
-    this.state.rates.map((value,key) => {
-        exchangeRates.push(value)
-    })
     var r1 = '';
     var r2 = '';
     if(this.state.sourceCurrency!=='' && this.state.destinationCurrency!=='' && this.state.sourceCurrency!==this.state.destinationCurrency && this.state.customRate){
-        for(var i=0;i<exchangeRates.length;i++){
-          var element = exchangeRates[i];
+        for(var i=0;i<this.state.exchangeRates.length;i++){
+          var element = this.state.exchangeRates[i];
           if(element['currency']===this.state.sourceCurrency){
               r1 = element['currenyToUSD']
           }

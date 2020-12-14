@@ -27,7 +27,7 @@ class MyOfferPage extends Component {
       sortable: true
     },
     {
-      text: "Source Currancye",
+      text: "Source Currancy",
       dataField: "sourceCurrency",
       sortable: true
     },
@@ -37,7 +37,7 @@ class MyOfferPage extends Component {
       sortable: true
     },
     {
-      text: "Destination Currancy",
+      text: "Destination Currency",
       dataField: "destinationCurrency",
       sortable: true
     }

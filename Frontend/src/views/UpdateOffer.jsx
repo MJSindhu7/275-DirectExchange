@@ -87,13 +87,13 @@ class UpdateOffer extends Component {
       splitExchange: this.state.splitExchange,
       offerStatus: "Open",
       user: { userName: localStorage.getItem("userId") },
-   //   currency: ['USD', 'INR', 'EUR', 'GBP', 'RMB']
+      currency: ['USD', 'INR', 'EUR', 'GBP', 'RMB']
     }
 
     console.log('offer => ' + JSON.stringify(offer));
 
     DirectExchangeService.updateOffer(offer).then(res => {
-      //  this.props.history.push('/admin/alloffers');
+        this.props.history.push('/admin/alloffers');
     });
   }
 
@@ -210,9 +210,6 @@ class UpdateOffer extends Component {
                             placeholder: "Counter Offers",
                             checked: this.state.counteroffers,
                             onChange: e => this.setState({ counteroffers: e.target.checked })
-
-
-
                           },
 
                           {
@@ -224,7 +221,6 @@ class UpdateOffer extends Component {
                             onChange: e => this.setState({ splitExchange: e.target.checked })
 
                           }
-
 
                         ]}
                       />
