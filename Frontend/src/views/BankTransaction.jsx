@@ -24,7 +24,7 @@ class BankTransaction extends Component {
 		  sortable: true
 		},
 		{
-		  text: "Source Currancye",
+		  text: "Source Currency",
 		  dataField: "sourceCurrency",
 		  sortable: true
 		},
@@ -34,7 +34,7 @@ class BankTransaction extends Component {
 		  sortable: true
 		},
 		{
-		  text: "Destination Currancy",
+		  text: "Destination Currency",
 		  dataField: "destinationCurrency",
 		  sortable: true
 		}

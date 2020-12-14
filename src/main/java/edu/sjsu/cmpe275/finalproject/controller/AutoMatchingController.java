@@ -1,6 +1,5 @@
 package edu.sjsu.cmpe275.finalproject.controller;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,16 +27,19 @@ public class AutoMatchingController {
 	@Autowired
 	PostExchangeOfferService postOfferService;
 
-	@GetMapping("/getOffers/{offer_id}")  //{user_name}/ @PathVariable(required = true, name = "user_name") String userName,
-	public ResponseEntity<List<Offers>> getAutoMatchedOffers(@PathVariable(required = true, name = "offer_id") Long offerID){
+	@GetMapping("/getSingleOffers/{offer_id}")  //{user_name}/ @PathVariable(required = true, name = "user_name") String userName,
+	public ResponseEntity<List<Offers>> getSingleAutoMatchedOffers(@PathVariable(required = true, name = "offer_id") Long offerID){
 
 		List<Offers> allOffers = null;
 		Offers presentOffer = null;
 		List<Offers> singleMatchOffers = new LinkedList<Offers>();
-		List<Offers[]> splitMatchOffers = new LinkedList<Offers[]>();
 		try {
 			allOffers = postOfferService.listAllOffers();
 			presentOffer = postOfferService.findOfferById(offerID).get();
+
+			if(!presentOffer.getOfferStatus().equals("Open")) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 
 			User thisUser = presentOffer.getUser();
 			String thisSourceCurrency = presentOffer.getSourceCurrency();
@@ -47,65 +49,109 @@ public class AutoMatchingController {
 
 
 			for(Offers offer : allOffers) {
-				User otherUser = offer.getUser();	
-				if(!otherUser.equals(thisUser)) {
-					String otherSourceCurrency = offer.getSourceCurrency();
-					String otherDestinationCurrency = offer.getDestinationCurrency();
-					if(thisSourceCurrency.equals(otherDestinationCurrency) && thisDestinationCurrency.equals(otherSourceCurrency)) {
-						Double otherSourceRemitAmount = offer.getRemitAmountSource();
-						Double otherDestinationRemitAmount = offer.getRemitAmountDestination();
+				if(offer.getOfferStatus().equals("Open")) {
+					User otherUser = offer.getUser();	
+					if(!otherUser.equals(thisUser)) {
+						String otherSourceCurrency = offer.getSourceCurrency();
+						String otherDestinationCurrency = offer.getDestinationCurrency();
+						if(thisSourceCurrency.equals(otherDestinationCurrency) && thisDestinationCurrency.equals(otherSourceCurrency)) {
+							Double otherSourceRemitAmount = offer.getRemitAmountSource();
+							Double otherDestinationRemitAmount = offer.getRemitAmountDestination();
 
-						// Single Offer Matching
-						Boolean cond1 = otherDestinationRemitAmount*0.9<=thisSourceRemitAmount && thisSourceRemitAmount<=otherDestinationRemitAmount*1.1; 
-						Boolean cond2 = otherSourceRemitAmount*0.9<=thisDestinationRemitAmount && thisDestinationRemitAmount<=otherSourceRemitAmount*1.1;
-						if( cond1 && cond2 ) {
-							singleMatchOffers.add(offer);
+							// Single Offer Matching
+							Boolean cond1 = otherDestinationRemitAmount*0.9<=thisSourceRemitAmount && thisSourceRemitAmount<=otherDestinationRemitAmount*1.1; 
+							Boolean cond2 = otherSourceRemitAmount*0.9<=thisDestinationRemitAmount && thisDestinationRemitAmount<=otherSourceRemitAmount*1.1;
+							if( cond1 && cond2 ) {
+								singleMatchOffers.add(offer);
+							}
 						}
+					}
+				}
+			}
+			List<Offers> sortedOffers = singleOffersSorter(singleMatchOffers,thisSourceRemitAmount);
+			System.out.println("Automatching Single offers are :"+sortedOffers.toString());
+			return new ResponseEntity<List<Offers>>(sortedOffers,HttpStatus.OK);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
+	}
 
-						// Split Offer Matching
+	@GetMapping("/getSplitOffers/{offer_id}")  //{user_name}/ @PathVariable(required = true, name = "user_name") String userName,
+	public ResponseEntity<List<Offers[]>> getSplitAutoMatchedOffers(@PathVariable(required = true, name = "offer_id") Long offerID){
 
-						for(Offers splitOffer : allOffers) {
-							if(!splitOffer.equals(offer) && !splitOffer.equals(presentOffer))
-							{
-								User splitUser = splitOffer.getUser();
-								if(!splitUser.equals(thisUser)) {
-									String splitSourceCurrency = splitOffer.getSourceCurrency();
-									String splitDestinationCurrency = splitOffer.getDestinationCurrency();
-									if(splitSourceCurrency.equals(thisSourceCurrency) && splitDestinationCurrency.equals(thisDestinationCurrency)) {
-										Double searchDestinationRemitAmount = otherDestinationRemitAmount-thisSourceRemitAmount;
-										Double searchSourceRemitAmount = otherSourceRemitAmount-thisDestinationRemitAmount;
+		List<Offers> allOffers = null;
+		Offers presentOffer = null;
+		List<Offers[]> splitMatchOffers = new LinkedList<Offers[]>();
+		try {
+			allOffers = postOfferService.listAllOffers();
+			presentOffer = postOfferService.findOfferById(offerID).get();
 
-										Boolean split1 = searchDestinationRemitAmount*0.9<=splitOffer.getRemitAmountSource() && splitOffer.getRemitAmountSource()<=searchDestinationRemitAmount*1.1;
-										Boolean split2 = searchSourceRemitAmount*0.9<=splitOffer.getRemitAmountDestination() && splitOffer.getRemitAmountDestination()<=searchSourceRemitAmount*1.1;	
-										if(split1 && split2) {
-											Offers[] arr = new Offers[2];
-											arr[0] = offer;
-											arr[1] = splitOffer;
-											splitMatchOffers.add(arr);
-										}
-									}
-									else if(splitSourceCurrency.equals(thisDestinationCurrency) && splitDestinationCurrency.equals(thisSourceCurrency)) {
-										Double searchDestinationRemitAmount = thisSourceRemitAmount-otherDestinationRemitAmount;
-										Double searchSourceRemitAmount = thisDestinationRemitAmount-otherSourceRemitAmount;
+			if(!presentOffer.getOfferStatus().equals("Open")) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			User thisUser = presentOffer.getUser();
+			String thisSourceCurrency = presentOffer.getSourceCurrency();
+			String thisDestinationCurrency = presentOffer.getDestinationCurrency();
+			Double thisSourceRemitAmount = presentOffer.getRemitAmountSource();
+			Double thisDestinationRemitAmount = presentOffer.getRemitAmountDestination();
 
-										Boolean split1 = searchDestinationRemitAmount*0.9<=splitOffer.getRemitAmountDestination() && splitOffer.getRemitAmountDestination()<=searchDestinationRemitAmount*1.1;
-										Boolean split2 = searchSourceRemitAmount*0.9<=splitOffer.getRemitAmountSource() && splitOffer.getRemitAmountSource()<=searchSourceRemitAmount*1.1;	
-										if(split1 && split2) {
-											Offers[] arr = new Offers[2];
-											arr[0] = offer;
-											arr[1] = splitOffer;
-											if(splitMatchOffers.isEmpty()) {
-												splitMatchOffers.add(arr);
+			for(Offers offer : allOffers) {
+				if(offer.getOfferStatus().equals("Open")) {
+					User otherUser = offer.getUser();	
+					if(!otherUser.equals(thisUser)) {
+						String otherSourceCurrency = offer.getSourceCurrency();
+						String otherDestinationCurrency = offer.getDestinationCurrency();
+						if(thisSourceCurrency.equals(otherDestinationCurrency) && thisDestinationCurrency.equals(otherSourceCurrency)) {
+							Double otherSourceRemitAmount = offer.getRemitAmountSource();
+							Double otherDestinationRemitAmount = offer.getRemitAmountDestination();
+
+							// Split Offer Matching
+							for(Offers splitOffer : allOffers) {
+								if(splitOffer.getOfferStatus().equals("Open")) {
+									if(!splitOffer.equals(offer) && !splitOffer.equals(presentOffer))
+									{
+										User splitUser = splitOffer.getUser();
+										if(!splitUser.equals(thisUser)) {
+											String splitSourceCurrency = splitOffer.getSourceCurrency();
+											String splitDestinationCurrency = splitOffer.getDestinationCurrency();
+											if(splitSourceCurrency.equals(thisSourceCurrency) && splitDestinationCurrency.equals(thisDestinationCurrency)) {
+												Double searchDestinationRemitAmount = otherDestinationRemitAmount-thisSourceRemitAmount;
+												Double searchSourceRemitAmount = otherSourceRemitAmount-thisDestinationRemitAmount;
+
+												Boolean split1 = searchDestinationRemitAmount*0.9<=splitOffer.getRemitAmountSource() && splitOffer.getRemitAmountSource()<=searchDestinationRemitAmount*1.1;
+												Boolean split2 = searchSourceRemitAmount*0.9<=splitOffer.getRemitAmountDestination() && splitOffer.getRemitAmountDestination()<=searchSourceRemitAmount*1.1;	
+												if(split1 && split2) {
+													Offers[] arr = new Offers[2];
+													arr[0] = offer;
+													arr[1] = splitOffer;
+													splitMatchOffers.add(arr);
+												}
 											}
-											else {
-												for(Offers[] exists:splitMatchOffers) {
-													Boolean cond = exists[1].equals(arr[0]) && exists[0].equals(arr[1]);
-													if(!cond){
+											else if(splitSourceCurrency.equals(thisDestinationCurrency) && splitDestinationCurrency.equals(thisSourceCurrency)) {
+												Double searchDestinationRemitAmount = thisSourceRemitAmount-otherDestinationRemitAmount;
+												Double searchSourceRemitAmount = thisDestinationRemitAmount-otherSourceRemitAmount;
+
+												Boolean split1 = searchDestinationRemitAmount*0.9<=splitOffer.getRemitAmountDestination() && splitOffer.getRemitAmountDestination()<=searchDestinationRemitAmount*1.1;
+												Boolean split2 = searchSourceRemitAmount*0.9<=splitOffer.getRemitAmountSource() && splitOffer.getRemitAmountSource()<=searchSourceRemitAmount*1.1;	
+												if(split1 && split2) {
+													Offers[] arr = new Offers[2];
+													arr[0] = offer;
+													arr[1] = splitOffer;
+													if(splitMatchOffers.isEmpty()) {
 														splitMatchOffers.add(arr);
+													}
+													else {
+														for(Offers[] exists:splitMatchOffers) {
+															Boolean cond = exists[1].equals(arr[0]) && exists[0].equals(arr[1]);
+															if(!cond){
+																splitMatchOffers.add(arr);
+															}
+														}
 													}
 												}
 											}
-										}
+										}			
 									}
 								}
 							}
@@ -113,17 +159,9 @@ public class AutoMatchingController {
 					}
 				}
 			}
+			System.out.println("Automatching offers"+splitMatchOffers.toString());
 
-			List<Offers> sortedOffers = singleOffersSorter(singleMatchOffers,thisSourceRemitAmount);
-			
-			
-			for(Offers[] offers : splitMatchOffers) {
-				sortedOffers.add(offers[0]);
-				sortedOffers.add(offers[1]);
-			}
-			System.out.println("automatching offre"+sortedOffers);
-			
-			return new ResponseEntity<List<Offers>>(sortedOffers,HttpStatus.OK);
+			return new ResponseEntity<List<Offers[]>>(splitMatchOffers,HttpStatus.OK);
 		} catch (Exception e) {
 			System.err.println(e);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -100,11 +100,16 @@ class DirectExchangeService {
   }
   getAutomatchingoffers(offerid) {
     console.log(offerid);
-    return axios.get(AUTOMATCH_ + "/getOffers/" + offerid);
+    return axios.get(AUTOMATCH_ + "/getSingleOffers/" + offerid);
   }
   getTransactionHistory(username) {
     console.log(username);
     return axios.get(DIRECT_EXCHANGE_Transaction_URL + "/transactionhistory/" + username);
+  }
+
+  updateUserRating(username) {
+    console.log(username);
+    return axios.get(DIRECT_EXCHANGE_Users_URL + "/updaterRating/" + username);
   }
 }
 

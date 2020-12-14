@@ -5,7 +5,7 @@ use finalproject;
 CREATE TABLE user (
 	user_name VARCHAR(255) NOT NULL UNIQUE,
 	nick_name VARCHAR(255),
-	rating BIGINT NOT NULL,
+	rating VARCHAR(255) NOT NULL DEFAULT 'N/A',
 	PRIMARY KEY (user_name));
 
 CREATE TABLE bankaccount ( 
@@ -71,8 +71,8 @@ CREATE TABLE rates (
 	usd_curr DECIMAL(6,4),
 	PRIMARY KEY (curr));
 
-insert into rates(curr,curr_usd,usd_curr) values ("INR",0.014,73.74);
-insert into rates(curr,curr_usd,usd_curr) values ("EUR",1.21,0.83);
-insert into rates(curr,curr_usd,usd_curr) values ("GBP",1.32,0.76);
-insert into rates(curr,curr_usd,usd_curr) values ("RMB",0.15,6.55);
-insert into rates(curr,curr_usd,usd_curr) values ("USD",1.00,1.00);
+insert into rates(curr,curr_usd,usd_curr) values ("INR",0.0136,73.6293);
+insert into rates(curr,curr_usd,usd_curr) values ("EUR",1.2145,0.8233);
+insert into rates(curr,curr_usd,usd_curr) values ("GBP",1.3326,0.7503);
+insert into rates(curr,curr_usd,usd_curr) values ("RMB",0.1526,6.5512);
+insert into rates(curr,curr_usd,usd_curr) values ("USD",1.0000,1.0000);

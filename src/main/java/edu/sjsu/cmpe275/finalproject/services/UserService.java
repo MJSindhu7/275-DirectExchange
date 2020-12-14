@@ -37,5 +37,9 @@ public class UserService {
 		return userRepository.getNick(user_name);
 		
 	}
+	
+	public void updateUserRating (String user_name, String rating) {
+		userRepository.updateUserRating(user_name, rating);
+	}
 
 }

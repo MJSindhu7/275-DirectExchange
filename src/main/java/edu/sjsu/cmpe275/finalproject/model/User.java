@@ -29,7 +29,7 @@ public class User {
 	private String nickName;
 
 	@Column(name = "rating")
-	private int rating = 0;
+	private String rating = "N/A";
 
 	@OneToMany(mappedBy = "user")
 	private List<BankAccount> accounts;
@@ -53,11 +53,11 @@ public class User {
 		this.nickName = nickName;
 	}
 
-	public int getRating() {
+	public String getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(String rating) {
 		this.rating = rating;
 	}
 }

@@ -123,7 +123,7 @@ class MyOfferPage extends Component {
 		alert(msg);
 	  }
   automatchmtd = (rowval) => {
-    console.log("beforee   automatch called"+rowval.id)
+    console.log("before automatch called"+rowval.id)
     DirectExchangeService.getAutomatchingoffers(rowval.id).then(res => {
       this.setState({ automatch: res.data });  
       console.log("automatch called"+this.state.automatch)
@@ -133,6 +133,11 @@ class MyOfferPage extends Component {
           pathname: '/admin/automatch',
           rowfrommyoffer: rowval 
         })
+      }
+      else{
+        this.showAlert("No AutoMatching Offers Available, Right Now")
+			  // this.props.history.push('admin/myoffers');
+			  window.location.reload(false)
       }
     });
   }
@@ -150,8 +155,9 @@ class MyOfferPage extends Component {
     this.setState({
       show: false,
     });
-    this.showAlert("Success -- Counter Offer")
-    this.props.history.push('/admin/alloffers');
+    // this.showAlert("Success -- Counter Offer")
+    this.props.history.push('/admin/myoffers');
+    window.location.reload(false)
   };
 
   handleShow = () => {

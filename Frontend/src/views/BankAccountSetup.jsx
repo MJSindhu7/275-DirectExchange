@@ -108,6 +108,7 @@ class BankAccountSetup extends Component {
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
 			this.showAlert("Success -- Bank Account Added")
 			this.props.history.push('/admin/bankaccount');
+			window.location.reload(false)
 		});
 	}
 	cancel() {
@@ -137,7 +138,7 @@ class BankAccountSetup extends Component {
    	   		srb.push({ label: element, value: element })
 		});
 		return (
-						<div className="content">
+				<div className="content">
 				<Grid fluid>
 					<Row>
 						<Col md={5}>
@@ -149,7 +150,7 @@ class BankAccountSetup extends Component {
 											ncols={["col-md-4", "col-md-4"]}
 											properties={[
 												{
-													label: "Bank name",
+													label: "Bank Name",
 													type: "text",
 													bsClass: "form-control",
 													placeholder: "Bank Name",
@@ -235,7 +236,7 @@ class BankAccountSetup extends Component {
 								}
 							/>
 						</Col>
-						<Col md={7}>
+						<Col md={10}>
               <Card
 				title="All Bank Accounts"
 				 content={

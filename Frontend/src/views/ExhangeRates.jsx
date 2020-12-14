@@ -53,11 +53,11 @@ class ExhangeRates extends Component {
       super(props) //since we are extending class Table so we have to use super in order to override Component class constructor
       this.state = { //state is by default an object
          rates: [
-            { Currency: 'EUR', EUR: 1.00 , GBP: 0.90, INR: 89.60, RMB: 7.94, USD: 1.21 },
-            { Currency: 'GBP', EUR: 1.11, GBP: 1.00, INR: 99.47, RMB: 8.81, USD: 1.35 },
-            { Currency: 'INR', EUR: 0.011 , GBP: 0.01, INR: 1.00, RMB: 0.089, USD: 0.014 },
-            { Currency: 'RMB', EUR: 0.13, GBP: 0.11, INR: 11.29, RMB: 1.00, USD: 0.15 },
-            { Currency: 'USD', EUR: 0.82, GBP: 0.74, INR: 73.84, RMB: 6.54, USD: 1.00 }
+            { Currency: 'EUR', EUR: 1.0000 , GBP: 0.9112, INR: 89.4227, RMB: 7.9564, USD: 1.2145 },
+            { Currency: 'GBP', EUR: 1.0971, GBP: 1.0000, INR: 98.1184, RMB: 8.7301, USD: 1.3326},
+            { Currency: 'INR', EUR: 0.0112 , GBP: 0.1021, INR: 1.0000, RMB: 0.0891, USD: 0.0136 },
+            { Currency: 'RMB', EUR: 0.1256, GBP: 0.1145, INR: 11.2358, RMB: 1.0000, USD: 0.1526 },
+            { Currency: 'USD', EUR: 0.8233, GBP: 0.7503, INR: 73.6293, RMB: 6.5512, USD: 1.0000 }
          ]
       }
    }

@@ -120,6 +120,9 @@ class PostOffer extends Component {
   getRates() {
     var r1 = '';
     var r2 = '';
+    if(this.state.sourceCurrency===this.state.destinationCurrency && this.state.sourceCurrency!=='' && this.state.destinationCurrency!==''){
+      return 1.0000;
+    }
     if(this.state.sourceCurrency!=='' && this.state.destinationCurrency!=='' && this.state.sourceCurrency!==this.state.destinationCurrency && this.state.customRate){
         for(var i=0;i<this.state.exchangeRates.length;i++){
           var element = this.state.exchangeRates[i];
@@ -131,7 +134,8 @@ class PostOffer extends Component {
           }
       }
       console.log("Exhange rate for 1 "+ this.state.sourceCurrency+" is "+r1*r2+" "+this.state.destinationCurrency);
-      return r1*r2;
+      var returnRate =r1*r2;
+      return returnRate.toFixed(4);
     }
   } 
 

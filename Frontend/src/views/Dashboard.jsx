@@ -123,6 +123,9 @@ class Dashboard extends Component {
       console.log("**" + this.state.offers)
     });
 
+    DirectExchangeService.updateUserRating(localStorage.getItem("userId")).then((res) => {
+      console.log("**" + res)
+    });
   }
 
   
