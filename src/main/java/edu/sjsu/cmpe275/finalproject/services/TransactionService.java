@@ -1,7 +1,13 @@
 package edu.sjsu.cmpe275.finalproject.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +24,11 @@ public class TransactionService {
 
 	String username = "";
 	String decision = "";
+	SendEmail email;
+
+	TransactionService() {
+		email = new SendEmail();
+	}
 
 	public String getUsername() {
 		return username;
@@ -51,6 +62,8 @@ public class TransactionService {
 
 		String offerstatus = "";
 
+		email.sendMailfunc(trans.getUserName(), trans.getOfferAccepter() + " has accepted your offer");
+
 		// 1.notify user -received request plz send money in 10min to DE bankaccount
 
 		if (trans.getOfferAccepter() != null && trans.getUserName() != null) {
@@ -59,7 +72,7 @@ public class TransactionService {
 			offerstatus = "InTransaction";
 			transrepo.save(trans);
 			offerservice.updateStatus(trans, offerstatus);
-			enterInTransactionMode(trans,"Expired");
+			enterInTransactionMode(trans, "Expired");
 		}
 
 	}
@@ -70,12 +83,17 @@ public class TransactionService {
 		boolean stoploop = false;
 		String offerstatus = "";
 		// 1.notify user
-
 		if (trans.getNewRemitAmount() != 0.00) {
 
+			email.sendMailfunc(trans.getUserName(),
+					trans.getOfferAccepter() + " Made a counter offer of " + trans.getNewRemitAmount());
+			email.sendMailfunc(trans.getOfferAccepter(),
+					"You made a counter offer to " + trans.getUserName() + " of " + trans.getNewRemitAmount());
+
 			offerstatus = "countermade";
-			//transrepo.save(trans);
+			// transrepo.save(trans);
 			offerservice.updateStatus(trans, "countermade");
+
 			stoploop = true;
 		}
 		long startTime = System.currentTimeMillis();
@@ -103,12 +121,12 @@ public class TransactionService {
 
 			offerstatus = "InTransaction";
 			offerservice.updateStatus(trans, offerstatus);
-			enterInTransactionMode(trans,"Open");
+			enterInTransactionMode(trans, "Open");
 		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void enterInTransactionMode(Transaction trans,String ifnotransaction) {
+	public void enterInTransactionMode(Transaction trans, String ifnotransaction) {
 
 		boolean fetchbankbalance = true;
 
@@ -119,60 +137,95 @@ public class TransactionService {
 
 		long startTime = System.currentTimeMillis();
 		long maxDurationInMilliseconds = 10 * 60 * 1000;
-		
-		transrepo.save(trans);
 
+		transrepo.save(trans);
+		java.util.Date dt = new java.util.Date();
+
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		email.sendMailfunc(trans.getUserName(), "Please Send Money To Direct Exchange account in 10min");
+		email.sendMailfunc(trans.getOfferAccepter(), "Please Send Money To Direct Exchange account in 10min");
+
+		trans.setTimestamp(dt);
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
 
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())
 					&& getDecision().equalsIgnoreCase("transfered")) {
 				offeraccepter = true;
+				setUsername("");
+				setDecision("");
+				email.sendMailfunc(trans.getUserName(),
+						"Direct Exchange has recived the money " + trans.getRemitAmountSource());
+			
 			}
 
 			if (getUsername().equalsIgnoreCase(trans.getUserName()) && getDecision().equalsIgnoreCase("transfered")) {
 				offerproposer = true;
+				setUsername("");
+				setDecision("");
+				email.sendMailfunc(trans.getOfferAccepter(),
+						"Direct Exchange has recived the money " + trans.getRemitAmountDestination());
+
 			}
 
-			if (offerproposer && offeraccepter || offerstatus.equalsIgnoreCase("Fulfilled")) {
+			if (offerproposer && offeraccepter) {
 				offerstatus = "Fulfilled";
 				offerproposer = false;
 				offeraccepter = false;
-				// 4.send email that money has received to account
+			
+			
+				
 
+				trans.setOfferStatus(offerstatus);
+				transrepo.save(trans);
+				offerservice.updateStatus(trans, offerstatus);
+				fetchbankbalance = false;
+				transactiondone = true;
+				offerstatus="";
 				// 5.charge service fee and dedcut amount
 
 				// 6.send email that money has transfered to account
-
-				trans.setOfferStatus(offerstatus);
-				offerservice.updateStatus(trans, offerstatus);
-				transrepo.save(trans);
-				fetchbankbalance = false;
-				transactiondone = true;
+				email.sendMailfunc(trans.getUserName(),
+						"Money has been transfered to your account and after service fee (0.05%) the amount is " + serviceFeeDestination(trans));
+				email.sendMailfunc(trans.getOfferAccepter(),
+						"Money has been transfered to your account and after service fee (0.05%) the amount is " + serviceFeeSource(trans));
+				
+			
 			}
 
 		}
 
 		if (transactiondone == false) {
-			offerstatus =ifnotransaction;
+			offerstatus = ifnotransaction;
 			trans.setOfferStatus(offerstatus);
 			offerservice.updateStatus(trans, offerstatus);
 			transrepo.save(trans);
 
 		}
 	}
+
+	private double serviceFeeSource(Transaction trans) {
+
+		double servicefee = (trans.getServiceFee() / 100) * (trans.getRemitAmountSource());
+		return trans.getRemitAmountSource() - servicefee;
+	}
 	
-//	private double serviceFee(Transaction trans) {
-//		
-//		double servicefee = (trans.getServiceFee()/100)*(trans.getRemitAmount());
-//		return trans.getRemitAmount()-servicefee;
-//	}
+	private double serviceFeeDestination(Transaction trans) {
+
+		double servicefee = (trans.getServiceFee() / 100) * (trans.getRemitAmountDestination());
+		return trans.getRemitAmountDestination() - servicefee;
+	}
 
 	public Transaction saveTransaction(Transaction trans) {
 		return transrepo.save(trans);
 	}
-	
-	public List<Transaction> getInTransactionOffers(String username,String offer_status) {
-		return transrepo.getInTransactionOffers(username,offer_status);
+
+	public List<Transaction> getInTransactionOffers(String username, String offer_status) {
+		return transrepo.getInTransactionOffers(username, offer_status);
+	}
+
+	public List<Transaction> getTransactionHistory(String username) {
+		return transrepo.getInTransactionHistory(username);
 	}
 
 }

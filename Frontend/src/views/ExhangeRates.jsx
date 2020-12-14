@@ -101,13 +101,13 @@ class ExhangeRates extends Component {
                     striped
                     hover
                     pagination={paginationFactory()}
-                    expandRow={true}
+                    //expandRow={true}
                     keyField='Currency'
                     data={this.state.rates}
                     columns={columns}
                     filter={ filterFactory()}
                     // expandRow={this.expandRow}
-                    expandComponent={ this.expandComponent }
+                    //expandComponent={ this.expandComponent }
                   />
 
                 }

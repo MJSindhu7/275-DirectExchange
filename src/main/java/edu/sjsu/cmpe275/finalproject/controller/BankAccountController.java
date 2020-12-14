@@ -90,7 +90,7 @@ public class BankAccountController {
 		return new ResponseEntity<List<BankAccount>>(bankAccount, HttpStatus.OK);
 	}
 
-	@PostMapping("/bankaccounts")
+	@PostMapping("/bankaccounts/")
 	public ResponseEntity<BankAccount> createBankAccount(@RequestBody BankAccount bankaccount) {
 
 			try {

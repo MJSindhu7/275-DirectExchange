@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "transaction")
@@ -19,8 +21,8 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "timestamp")
-	private Date Timestamp;
+	@Temporal(TemporalType.TIMESTAMP)
+	private java.util.Date Timestamp;
 	
 	@Column(name = "offer_accepter")
 	private String offerAccepter;
@@ -233,12 +235,12 @@ public class Transaction {
 		this.serviceFee = serviceFee;
 	}
 
-	public Date getTimestamp() {
+	public java.util.Date getTimestamp() {
 		return Timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		Timestamp = timestamp;
+	public void setTimestamp(java.util.Date string) {
+		Timestamp = string;
 	}
 
 	public String getOfferAccepter() {

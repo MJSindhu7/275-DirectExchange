@@ -3,7 +3,7 @@ import {
 	Grid,
 	Row,
 	Col,
-	Dropdown
+	Alert
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -11,8 +11,57 @@ import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
 import Select from 'react-select';
 import DirectExchangeService from '../services/DirectExchangeService';
+import BootstrapTable from "react-bootstrap-table-next";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 class BankAccountSetup extends Component {
+	columns = [
+		{
+		  text: "Bank Name",
+		  dataField: "bankName",
+		  sortable: true
+		},
+		{
+		  text: "Account Number",
+		  dataField: "accountNumber",
+		  sortable: true
+		},
+		{
+		  text: "Owner Name",
+		  dataField: "ownerName",
+		  sortable: true
+		},
+		{
+		  text: "Owner Address",
+		  dataField: "address",
+		  sortable: true
+		}
+		,
+		{
+		  text: "Country Rate",
+		  dataField: "country",
+		  sortable: true,
+		  //right: true
+		},,
+		{
+		  text: "Primary Currency",
+		  dataField: "currency",
+		  sortable: true
+		},
+		{
+		  text: "Type",
+		  dataField: "sendingOrReceiving",
+		  sortable: true,
+		  //filter: textFilter()
+		  //right: true
+		},
+		
+	  ];
+	
+
 	constructor(props) {
 		super(props)
 
@@ -29,13 +78,18 @@ class BankAccountSetup extends Component {
 			listCountries: ['Republic of India','United States of America', 'United Kingdom','People\'s Republic of China','Germany','France','Portugal','Spain','Italy'], 
 			sendingOrReceiving: '',
 			userName: localStorage.getItem("userId"),
-			sendOrRecMap : ['Sending','Receiving','Both'],			 
+			sendOrRecMap : ['Sending','Receiving','Both'],	
+			accounts:[]		 
 		}
 	}
 
 	// step 3
 	componentDidMount() {
-
+		console.log("username is"+localStorage.getItem("userId"))
+		DirectExchangeService.getBankAccountsByUser(localStorage.getItem("userId")).then((res) => {
+			this.setState({ accounts: res.data });
+			console.log("**" + this.state.accounts)
+		 });
 	}
 	saveOrUpdateBankAcc = (e) => {
 		e.preventDefault();
@@ -49,15 +103,15 @@ class BankAccountSetup extends Component {
       		sendingOrReceiving: this.state.sendingOrReceiving, 
 			user:{userName: localStorage.getItem("userId")}};
 
-		console.log('bankaccount => ' + JSON.stringify(bankaccount));
+		console.log('bankaccount details are => ' + JSON.stringify(bankaccount));
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
+			this.showAlert("Success -- Bank Account Added")
 			this.props.history.push('/admin/bankaccount');
 		});
 	}
-
-
 	cancel() {
+		this.showAlert("Canceled -- Bank Account Not Added")
 		this.props.history.push('/admin/dashboard');
 	}
 
@@ -65,6 +119,10 @@ class BankAccountSetup extends Component {
 		return <h3 className="text-center">Register Bank Account</h3>
 
 	}
+
+	showAlert(msg) {
+		alert(msg);
+	  }
 	render() {
 		 var curr = [];
    			this.state.primaryCurrency.forEach(function (element) {
@@ -82,8 +140,8 @@ class BankAccountSetup extends Component {
 						<div className="content">
 				<Grid fluid>
 					<Row>
-						<Col md={8}>
-							<Card
+						<Col md={5}>
+							<Card justify="center"
 								title="Add Bank Account"
 								content={
 									<form>
@@ -131,30 +189,30 @@ class BankAccountSetup extends Component {
 												}
 											]}
 										/>
-										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-											<span>Country</span>
+										<div style={{ width: '270px', paddingTop:'10px',paddingBottom:'10px'}}>
+											<label className="control-label">Country</label>
 											<Select
-											class= "form-control"
+											class= "dropdown-menu"
 											name="Country"
 											options={countries}
 											defaultValue={{ label: "Select your Country ", value: 0 }}
 											onChange={(event) => this.setState({ country: event.label })}
 											/>
 										</div>
-										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-										<span>Primary Currency</span>
+										<div style={{ width: '270px', paddingTop:'10px',paddingBottom:'10px'}}>
+										<label className="control-label">Primary Currency</label>
 											<Select
-											class= "form-control"
+											class= "dropdown-menu"
 											name="Primary Currency"
 											options={curr}
 											defaultValue={{ label: "Select Primary Currency ", value: 0 }}
 											onChange={(event) => this.setState({ currency: event.label })}
 											/>
 										</div>
-										<div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-										<span>Sending or Receiving or Both</span>
+										<div style={{ width: '270px', paddingTop:'10px',paddingBottom:'10px'}}>
+										<label className="control-label">Sending or Receiving or Both</label>
 											<Select
-											class= "form-control"
+											class= "dropdown-menu"
 											name="Send/Receive/Both"
 											options={srb}
 											defaultValue={{ label: "Select Option ", value: 0 }}
@@ -163,19 +221,41 @@ class BankAccountSetup extends Component {
 										</div>
 										<div className="btn-toolbar">
 												
-											<Button bsStyle="danger" pullRight fill type="submit" onClick={this.cancel.bind(this)}>
+											
+											<Button bsStyle="info"  fill type="submit" onClick={this.saveOrUpdateBankAcc}>
+													Add Account
+										</Button>
+										<Button bsStyle="danger"  fill type="submit" onClick={this.cancel.bind(this)}>
 													Cancel
 											</Button>
 							
-											<Button bsStyle="info" pullRight fill type="submit" onClick={this.saveOrUpdateBankAcc}>
-													Add Account
-										</Button>
 										</div>
 										<div className="clearfix" />
 									</form>
 								}
 							/>
 						</Col>
+						<Col md={7}>
+              <Card
+				title="All Bank Accounts"
+				 content={
+
+                  <BootstrapTable
+                    striped
+                    hover
+                    pagination={paginationFactory()}
+                   // expandRow={true}
+                    keyField='id'
+                    data={this.state.accounts}
+                    columns={this.columns}
+                    filter={filterFactory()}
+                    // expandRow={this.expandRow}
+                    //expandComponent={this.expandComponent}
+                  />
+
+                }
+              />
+            </Col>
 
 					</Row>
 				</Grid>

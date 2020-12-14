@@ -12,15 +12,15 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class SendEmail {
-	public void sendMailfunc(String rec) throws MessagingException {
+	public void sendMailfunc(String rec,String msg) {
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
 		properties.put("mail.smtp.host", "smtp.gmail.com");
 		properties.put("mail.smtp.port", "587");
 		
-		String myEmail = "";
-		String password = "";
+		String myEmail = "cmpe275de@gmail.com";
+		String password = "cmpe275@directexchange";
 		
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -30,22 +30,26 @@ public class SendEmail {
 				
 			}
 		});
-		Message message = prepareMessage(session, myEmail, rec);
+		Message message = prepareMessage(session, myEmail, rec,msg);
 		
-		Transport.send(message);
+		try {
+			Transport.send(message);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Sent mail+++++++++++++");
 	}
 
-	private static Message prepareMessage(Session session, String email, String recepient) {
+	private static Message prepareMessage(Session session, String email, String recepient,String msg) {
 		Message message = new MimeMessage(session);
 		try {
 			message.setFrom(new InternetAddress(email));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
 			message.setSubject("Direct Exchange Mail");
-			message.setText("Heyyyy!!! First mail");
+			message.setText(msg);
 			return message;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

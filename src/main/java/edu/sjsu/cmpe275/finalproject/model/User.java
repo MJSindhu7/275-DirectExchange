@@ -36,7 +36,7 @@ public class User {
 
 	@OneToMany(mappedBy = "user")
 	private List<Offers> offers;
-
+	
 	public String getUserName() {
 		return userName;
 	}

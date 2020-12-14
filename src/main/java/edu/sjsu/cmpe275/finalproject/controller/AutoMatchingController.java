@@ -121,6 +121,7 @@ public class AutoMatchingController {
 				sortedOffers.add(offers[0]);
 				sortedOffers.add(offers[1]);
 			}
+			System.out.println("automatching offre"+sortedOffers);
 			
 			return new ResponseEntity<List<Offers>>(sortedOffers,HttpStatus.OK);
 		} catch (Exception e) {

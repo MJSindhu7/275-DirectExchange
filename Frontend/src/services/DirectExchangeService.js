@@ -5,8 +5,10 @@ const DIRECT_EXCHANGE_Offers_URL = "/offers";
 const DIRECT_EXCHANGE_Transaction_URL = "/exchange";
 const DIRECT_EXCHANGE_Users_URL = "/user";
 const DIRECT_EXCHANGE_Rates_URL = "/rates";
+const AUTOMATCH_ = "/automatch";
 
 class DirectExchangeService {
+  
   addBankAccount(bankacount) {
     console.log(bankacount);
     return axios.post(DIRECT_EXCHANGE_BANK_URL + "/bankaccounts/", bankacount);
@@ -95,6 +97,14 @@ class DirectExchangeService {
       from
     }&symbols=${to}`)
 
+  }
+  getAutomatchingoffers(offerid) {
+    console.log(offerid);
+    return axios.get(AUTOMATCH_ + "/getOffers/" + offerid);
+  }
+  getTransactionHistory(username) {
+    console.log(username);
+    return axios.get(DIRECT_EXCHANGE_Transaction_URL + "/transactionhistory/" + username);
   }
 }
 

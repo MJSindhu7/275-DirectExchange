@@ -60,6 +60,19 @@ public class TransactionController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	
+	@GetMapping("/transactionhistory/{username}")
+	public ResponseEntity<List<Transaction>> getTransactionHistory(@PathVariable(required = true, name = "username") String userName) {
+		List<Transaction> alltranscations=null;
+		try {
+			alltranscations= directexchangeservice.getTransactionHistory(userName);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<Transaction>>(alltranscations, HttpStatus.OK);
+	}
 
 	@PostMapping("/exchangeaction/{username}/{decision}") // generic api for accpeting counter offers or direct offers													// or send money button
 	public ResponseEntity starttransaction(@PathVariable(required = true, name = "username") String userName,

@@ -4,7 +4,7 @@ use finalproject;
 
 CREATE TABLE user (
 	user_name VARCHAR(255) NOT NULL UNIQUE,
-	nick_name VARCHAR(255) NOT NULL UNIQUE,
+	nick_name VARCHAR(255),
 	rating BIGINT NOT NULL,
 	PRIMARY KEY (user_name));
 

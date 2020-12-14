@@ -105,13 +105,16 @@ class BankTransaction extends Component {
 	  counterofferresponse=(action) => {
 		let userid=localStorage.getItem("userId")
 		DirectExchangeService.exchangeaction(userid,action).then((res) => {
-		  // this.setState({ offers: res.data });
-		 //  console.log("**" + this.state.offers)
-		  console.log("**" + res.data)
+		this.showAlert("Success -- Money Transfered")
+		this.props.history.push('/admin/alloffers');
+		 console.log("**" + res.data)
 		});
 	
 	  }
 	
+	  showAlert(msg) {
+		alert(msg);
+	  }
 	  componentDidMount() {
 	
 		DirectExchangeService.listUsersTransactions(localStorage.getItem("userId"),"InTransaction").then((res) => {
@@ -136,13 +139,13 @@ class BankTransaction extends Component {
 						striped
 						hover
 						pagination={paginationFactory()}
-						expandRow={true}
+						//expandRow={true}
 						keyField='id'
 						data={this.state.transactions}
 						columns={this.columns}
 						filter={filterFactory()}
 						// expandRow={this.expandRow}
-						expandComponent={this.expandComponent}
+						//expandComponent={this.expandComponent}
 					  />
 	
 					}

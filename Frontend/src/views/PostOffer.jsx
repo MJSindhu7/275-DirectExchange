@@ -84,9 +84,14 @@ class PostOffer extends Component {
     console.log('offer => ' + JSON.stringify(offer));
 
     DirectExchangeService.addPostOffer(offer).then(res => {
+      this.showAlert("Success -- Posted Offer")
       this.props.history.push('/admin/alloffers');
     });
   }
+
+  showAlert(msg) {
+		alert(msg);
+	  }
 
   onChange = (dateval) => {
     this.setState({ expirationDate: dateval });
@@ -152,7 +157,8 @@ class PostOffer extends Component {
                   content={
                     <form>
                       <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-											<span>Source Country</span>
+										 <label class="control-label">Source Country</label>
+										
 											<Select
 											class= "form-control"
 											name="Source Country"
@@ -163,7 +169,8 @@ class PostOffer extends Component {
 											/>
 										</div>
                        <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-										    <span>Source Currency</span>
+										     <label class="control-label">Source Currency</label>
+										
                         <Select
                         class= "form-control"
                           name="Source Currency"
@@ -184,14 +191,18 @@ class PostOffer extends Component {
 										</div>
                       
                       <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-										     <span>Destination Currency</span>
+                      <label class="control-label">Destination Currency</label>
+										
                         <Select
                           name="Destination Currency"
                           options={curr}
                           defaultValue={{ label: "Select Destination Currency", value: 0 }}
                           onChange={(event) => this.setState({ destinationCurrency: event.label })}
+                          onBlur={(e) => this.setState({exchangeRate:this.getRates()})}
+                     
                         />
                       </div>
+
                       <FormInputs
                         ncols={["col-md-4", "col-md-2"]}
                         properties={[
@@ -201,7 +212,8 @@ class PostOffer extends Component {
                             bsClass: "form-control",
                             placeholder: "Exchange Rate",
                             value : this.getRates(),
-                            onChange: e => this.setState({ exchangeRate: e.target.value })
+                            onChange: e => this.setState({ exchangeRate: e.target.value }),
+                      
                           },                       {
                             label: "Use Prevailing Rate",
                             type: "checkbox",
@@ -221,15 +233,18 @@ class PostOffer extends Component {
                             bsClass: "form-control",
                             placeholder: "1000.00",
                             value: this.state.remitAmountSource,
-                            onChange: e => this.setState({ remitAmountSource: e.target.value })
+                            onChange: e => this.setState({ remitAmountSource: e.target.value }),
+                            onBlur: e => this.setState({remitAmountDestination:this.state.exchangeRate*this.state.remitAmountSource}),
                           },
                           {
                             label: "Destination Remit Amount",
                             type: "text",
                             bsClass: "form-control",
                             placeholder: "Destination Remit Amount",
-                            value: this.state.remitAmountDestination,
-                            onChange: e => this.setState({ remitAmountDestination: e.target.value })
+                           // value: this.state.remitAmountDestination,
+                           // onChange: e => this.setState({ remitAmountDestination: e.target.value })
+                           value: this.state.remitAmountDestination,
+                           onclick: e => this.setState({ remitAmountDestination: e.target.value })
                           }
                         ]}
                       />
@@ -286,7 +301,8 @@ class PostOffer extends Component {
       console.log("Please add min 2 different country bank account")
       return (
         <div className="content">
-
+ <label class="control-label">PLEASE ADD BANK ACCOUNTS FOR MIN 2 COUNTRIES</label>
+										
         </div>
       );
     }

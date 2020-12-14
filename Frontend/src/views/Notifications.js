@@ -1,25 +1,24 @@
-import React, { Component } from "react";
-import { Grid, Row, Col, Alert } from "react-bootstrap";
+import React from 'react';
+import NotificationSystem from 'react-notification-system';
 
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+export default class Notifications extends React.Component {
+  notificationSystem = React.createRef();
 
+  addNotification = event => {
+    event.preventDefault();
+    const notification = this.notificationSystem.current;
+    notification.addNotification({
+      message: 'Notification message',
+      level: 'success'
+    });
+  };
 
-export const createNotification = (type,msg) => {
-    return () => {
-      switch (type) {
-        case 'info':
-          console.log("heyy no")
-          NotificationManager.info('Info message');
-          break;
-        case 'success':
-          NotificationManager.success('Success message', 'Title here');
-          break;
-        case 'warning':
-          NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
-          break;
-        case 'fill-all-fields-error':
-          NotificationManager.error('Please fill in all the fields.', 'Error', 5000);
-          break;
-      }
-    };
+  render() {
+    return (
+      <div>
+        <button onClick={this.addNotification}>Add notification</button>
+        <NotificationSystem ref={this.notificationSystem} />
+      </div>
+    );
   }
+}

@@ -63,6 +63,11 @@ class UpdateOffer extends Component {
         newRemitAmount: offer.newRemitAmount,
         splitExchange: offer.splitExchange,
         offerStatus: "Open",
+        currency: ['USD', 'INR', 'EUR', 'GBP', 'RMB'],
+        listCountries: ['Republic of India','United States of America', 'United Kingdom','People\'s Republic of China','Germany','France','Portugal','Spain','Italy'], 
+        rates : [],
+        exchangeRates :[],
+        customRate: true,
 
 
       });
@@ -93,27 +98,47 @@ class UpdateOffer extends Component {
     console.log('offer => ' + JSON.stringify(offer));
 
     DirectExchangeService.updateOffer(offer).then(res => {
-        this.props.history.push('/admin/alloffers');
+      this.showAlert("Success--Updates are done")
     });
   }
 
+  showAlert(msg) {
+    alert(msg);
+  }
   onChange = (dateval) => {
     this.setState({ expirationDate: dateval });
     console.log((dateval));
   }
 
+  getRates() {
+    var r1 = '';
+    var r2 = '';
+    if(this.state.sourceCurrency!=='' && this.state.destinationCurrency!=='' && this.state.sourceCurrency!==this.state.destinationCurrency && this.state.customRate){
+        for(var i=0;i<this.state.exchangeRates.length;i++){
+          var element = this.state.exchangeRates[i];
+          if(element['currency']===this.state.sourceCurrency){
+              r1 = element['currenyToUSD']
+          }
+          if(element['currency']===this.state.destinationCurrency){
+              r2 = element['usdtoCurrency']
+          }
+      }
+      console.log("Exhange rate for 1 "+ this.state.sourceCurrency+" is "+r1*r2+" "+this.state.destinationCurrency);
+      return r1*r2;
+    }
+  } 
 
   render() {
     var curr = [];
     this.state.currency.forEach(function (element) {
       curr.push({ label: element, value: element })
     });
-
      var countries = [];
    			this.state.listCountries.forEach(function (element) {
    	   		countries.push({ label: element, value: element })
     });
-    return (
+    var prate = this.getRates();
+       return (
       <div className="content">
         <Grid fluid>
           <Row>
@@ -124,48 +149,27 @@ class UpdateOffer extends Component {
                   <form>
 
                   <div class=" form-group col-md-16 col-md-19 ">
-                        <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-                        <span>Source Country</span>
-                        <Select
-                        class= "form-control"
-                        name="Source Country"
-                        options={countries}
-                        defaultValue={{ label: "Select your Source Country ", value: 0 }}
-                        onChange={(event) => this.setState({ sourceCountry: event.label })}
-                        />
-                        </div>
-                       
-                       <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-                        <span>Source Currency</span>
-                        <Select
-                          class="form-control"
-                          name="Source Currency"
-                          options={curr}
-                          defaultValue={this.state.sourceCurrency}
-                          onChange={(event) => this.setState({ sourceCurrency: event.label })}
-                        />
-                      </div>
-                   
-                      <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-											<span>Destination Country</span>
-											<Select
-											class= "form-control"
-											name="Destination Country"
-											options={countries}
-											defaultValue={{ label: "Select your Destination Country ", value: 0 }}
-											onChange={(event) => this.setState({ destinationCountry: event.label })}
-											/>
-										</div>
-                      <div style={{ width: '300px', paddingTop:'10px',paddingBottom:'10px'}}>
-									     <span>Destination Currency</span>
-                        <Select
-                          name="Destination Currency"
-                          options={curr}
-                          defaultValue={this.state.destinationCurrency}
-                          onChange={(event) => this.setState({ destinationCurrency: event.label })}
-                        />
-                      </div>
-
+                  <FormInputs
+                        ncols={["col-md-4", "col-md-2"]}
+                        properties={[
+                          {
+                            label: "Exchange Rate",
+                            type: "text",
+                            bsClass: "form-control",
+                            placeholder: "Exchange Rate",
+                            value : this.state.exchangeRate,
+                            onChange: e => this.setState({ exchangeRate: e.target.value }),
+                      
+                          },                       {
+                            label: "Use Prevailing Rate",
+                            type: "checkbox",
+                            bsClass: "form-control",
+                            placeholder: "Use Prevailing Rate",
+                            checked: this.state.customRate,
+                            onChange: e => this.setState({ customRate: e.target.checked })
+                          }
+                        ]}
+                      />
                       <FormInputs
                         ncols={["col-md-4", "col-md-4"]}
                         properties={[
@@ -173,28 +177,28 @@ class UpdateOffer extends Component {
                             label: "Remit Amount",
                             type: "text",
                             bsClass: "form-control",
-                            placeholder: "Remit Amount",
+                            placeholder: "1000.00",
                             value: this.state.remitAmountSource,
-                            onChange: e => this.setState({ remitAmountSource: e.target.value })
+                            onChange: e => this.setState({ remitAmountSource: e.target.value }),
+                            onBlur: e => this.setState({remitAmountDestination:this.state.exchangeRate*this.state.remitAmountSource}),
                           },
                           {
-                            label: "Exchange Rate",
+                            label: "Destination Remit Amount",
                             type: "text",
                             bsClass: "form-control",
-                            placeholder: "Exchange Rate",
-                            value: this.state.exchangeRate,
-                            onChange: e => this.setState({ exchangeRate: e.target.value })
-
+                            placeholder: "Destination Remit Amount",
+                           // value: this.state.remitAmountDestination,
+                           // onChange: e => this.setState({ remitAmountDestination: e.target.value })
+                           value: this.state.remitAmountDestination,
+                           onclick: e => this.setState({ remitAmountDestination: e.target.value })
                           }
                         ]}
                       />
 
                       <FormInputs
                         ncols={["col-md-4", "col-md-2", "col-md-2"]}
-
                         properties={[
-
-                          {
+                        {
                             label: "Expiration Date",
                             type: "date",
                             bsClass: "form-control",
@@ -210,6 +214,7 @@ class UpdateOffer extends Component {
                             placeholder: "Counter Offers",
                             checked: this.state.counteroffers,
                             onChange: e => this.setState({ counteroffers: e.target.checked })
+
                           },
 
                           {
@@ -219,9 +224,7 @@ class UpdateOffer extends Component {
                             placeholder: "Split Exchange",
                             checked: this.state.splitExchange,
                             onChange: e => this.setState({ splitExchange: e.target.checked })
-
                           }
-
                         ]}
                       />
 

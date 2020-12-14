@@ -1,201 +1,191 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v1.3.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
-
-import { Card } from "components/Card/Card.jsx";
+import { Grid, Row, Col, Table } from "react-bootstrap";
+import Card from "components/Card/Card.jsx";
+import DirectExchangeService from '../services/DirectExchangeService';
+import Button from "components/CustomButton/CustomButton.jsx";
+import BootstrapTable from "react-bootstrap-table-next";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory, { textFilter, numberFilter } from 'react-bootstrap-table2-filter';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import DropdownDate from "react-dropdown-date";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
-import DirectExchangeService from "../services/DirectExchangeService";
-import {
-  dataPie,
-  legendPie,
-  dataSales,
-  optionsSales,
-  responsiveSales,
-  legendSales,
-  dataBar,
-  optionsBar,
-  responsiveBar,
-  legendBar,
-} from "variables/Variables.jsx";
 
+ 
 class Dashboard extends Component {
-  state = {
-    nickname: "",
-  };
-  createLegend(json) {
-    var legend = [];
-    for (var i = 0; i < json["names"].length; i++) {
-      var type = "fa fa-circle text-" + json["types"][i];
-      legend.push(<i className={type} key={i} />);
-      legend.push(" ");
-      legend.push(json["names"][i]);
-    }
-    return legend;
-  }
 
-  setNick = (name) => {
-    this.setState({
-      nickname: name,
-    });
-  };
+  columns = [
+  {
+    text: "Id",
+    dataField: "id",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "4%" };
+    }
+  },
+  {
+    text: "Timestamp",
+    dataField: "timestamp",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "14%" };
+    }
+  },
+  {
+    text: "Source Country",
+    dataField: "sourceCountry",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
+  },
+  {
+    text: "Source Currency",
+    dataField: "sourceCurrency",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
+  },
+  {
+    text: "Destination Country",
+    dataField: "destinationCountry",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
+  },
+  {
+    text: "Destination Currency",
+    dataField: "destinationCurrency",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
+  }
+  ,
+  {
+    text: "Exchange Rate",
+    dataField: "exchangeRate",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "8%" };
+    }
+    //right: true
+  },
+  {
+    text: "Source Remit Amount",
+    dataField: "remitAmountSource",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
+    //filter: textFilter()
+    //right: true
+  },,
+  {
+    text: "Destination Remit Amount",
+    dataField: "remitAmountDestination",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "10%" };
+    }
+    //filter: textFilter()
+    //right: true
+  },
+  {
+    text: "Offer Status",
+    dataField: "offerStatus",
+    sortable: true,
+    headerStyle: () => {
+      return { width: "12%" };
+    }
+    //right: true
+  }
+];
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+
+      offers: [],
+      rowval:[],
+      newremitAmount:'0.00',
+      date: null, selectedDate: "2012-11-15"
+    }
+  }
 
   componentDidMount() {
-    DirectExchangeService.getNickName(localStorage.getItem("userId"))
-      .then((res) => {
-        this.setNick(res.data);
-      })
-      .catch(function (error) {
-        return null;
-      });
+
+    DirectExchangeService.getTransactionHistory(localStorage.getItem("userId")).then((res) => {
+      this.setState({ offers: res.data });
+      console.log("**" + this.state.offers)
+    });
+
   }
+
+  
+  // onacceptoffer(row) {
+  //    this.setState({ this.row.userRating : "InTrasaction"});
+  // }
 
   render() {
     return (
       <div className="content">
-        {"Welcome user " + this.state.nickname}
-        {/* <Grid fluid>
+        <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
+          <Row>
+            <Col lg={4} sm={6}>
               <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Capacity"
-                statsValue="105GB"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
+               bigIcon={<i className="fa fa-twitter text-info" />}
+                statsText="Total Transactions"
+                statsValue={this.state.offers.length}
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={5}>
               <StatsCard
                 bigIcon={<i className="pe-7s-wallet text-success" />}
-                statsText="Revenue"
+                statsText="Total Amount Transfered In USD"
                 statsValue="$1,345"
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Last day"
               />
             </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="fa fa-twitter text-info" />}
-                statsText="Followers"
-                statsValue="+45"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
-            </Col>
+           
+          
           </Row>
-          <Row>
-            <Col md={8}>
+          
+            <Col md={16}>
               <Card
-                statsIcon="fa fa-history"
-                id="chartHours"
-                title="Users Behavior"
-                category="24 Hours performance"
-                stats="Updated 3 minutes ago"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataSales}
-                      type="Line"
-                      options={optionsSales}
-                      responsiveOptions={responsiveSales}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendSales)}</div>
-                }
-              />
-            </Col>
-            <Col md={4}>
-              <Card
-                statsIcon="fa fa-clock-o"
-                title="Email Statistics"
-                category="Last Campaign Performance"
-                stats="Campaign sent 2 days ago"
-                content={
-                  <div
-                    id="chartPreferences"
-                    className="ct-chart ct-perfect-fourth"
-                  >
-                    <ChartistGraph data={dataPie} type="Pie" />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendPie)}</div>
-                }
-              />
-            </Col>
-          </Row>
+                title="Transaction History"
+               content={
+                 
 
-          <Row>
-            <Col md={6}>
-              <Card
-                id="chartActivity"
-                title="2014 Sales"
-                category="All products including Taxes"
-                stats="Data information certified"
-                statsIcon="fa fa-check"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataBar}
-                      type="Bar"
-                      options={optionsBar}
-                      responsiveOptions={responsiveBar}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendBar)}</div>
+                  <BootstrapTable
+                    striped
+                    pagination={paginationFactory()}
+                    keyField='id'
+                    data={this.state.offers}
+                    columns={this.columns}
+                    filter={ filterFactory()}
+                    // expandRow={this.expandRow}
+                    //expandComponent={ this.expandComponent }
+                  />
+
                 }
               />
+
+              
+
+       
+
+
             </Col>
 
-            <Col md={6}>
-              <Card
-                title="Tasks"
-                category="Backend development"
-                stats="Updated 3 minutes ago"
-                statsIcon="fa fa-history"
-                content={
-                  <div className="table-full-width">
-                    <table className="table">
-                      <Tasks />
-                    </table>
-                  </div>
-                }
-              />
-            </Col>
+
           </Row>
-        </Grid> */}
-      </div>
+        </Grid >
+      </div >
+      
     );
   }
 }

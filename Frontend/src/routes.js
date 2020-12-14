@@ -7,9 +7,8 @@ import PostOffer from "views/PostOffer";
 import BankAccountSetup from "views/BankAccountSetup";
 import BankTransaction from "views/BankTransaction";
 import ExhangeRates from "views/ExhangeRates";
-import ViewBankAccounts from "views/ViewBankAccounts";
 //import Login from "views/Login";
-
+import Automatch from "views/Automatch";
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -47,14 +46,6 @@ const dashboardRoutes = [
     component: BankAccountSetup,
     layout: "/admin",
   },
-
-  {
-    path: "/viewaccounts",
-    name: "Linked Accounts",
-    icon: "pe-7s-user",
-    component: ViewBankAccounts,
-    layout: "/admin",
-  },
   {
     path: "/postoffer",
     name: "Post Offer",
@@ -82,6 +73,12 @@ const dashboardRoutes = [
     icon: "pe-7s-note2",
     component: MyOfferPage,
     layout: "/admin",
+  }
+  ,
+  {
+    path: "/automatch",
+    component: Automatch,
+    layout: "/admin"
   }
 ];
 

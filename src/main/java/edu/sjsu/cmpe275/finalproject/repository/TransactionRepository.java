@@ -23,6 +23,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 		
 	 @Query(value=GET_INTransaction_Offers, nativeQuery = true)
 	 List<Transaction> getInTransactionOffers(@Param("username") String username,@Param("offer_status") String offer_status);
+
+	 final static String GET_INTransaction_history = "select * from Transaction e where e.user_name=:username";
+		
+	 @Query(value=GET_INTransaction_history, nativeQuery = true)
+	 List<Transaction> getInTransactionHistory(String username);
 	
 
 }
