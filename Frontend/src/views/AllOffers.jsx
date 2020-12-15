@@ -13,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from "react-router-dom";
 
+const notify = () => toast("Wow so easy !");
 class AllOffers extends Component {
 
   columns = [
@@ -133,7 +134,7 @@ class AllOffers extends Component {
       }
       ,
       formatter: (cell, row, rowIndex, formatExtraData) => {
-        console.log("useroffer lengths"+this.state.usersoffers.length)
+        console.log("username is"+row.user.userName)
         if (row.user.userName != localStorage.getItem("userId") & row.offerStatus == "Open") {
           if (row.counteroffers & row.splitExchange) {
             return (
@@ -147,6 +148,8 @@ class AllOffers extends Component {
                     </Button>
 
                 <Button bsStyle="success"  fill type="submit" onClick={event => { event.preventDefault();this.directacceptoffer(row) }}>
+
+
                   Accept
                      </Button></div>
             )
@@ -188,14 +191,7 @@ class AllOffers extends Component {
           }
           
          
-        }
-        console.log("---")
-        console.log(row.user.userName)
-        console.log(row.offerStatus)
-        console.log(row.id)
-        console.log(this.state.othersofferid)
-        console.log("---"+row.offeraccepterid)
-        if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "Open") {
+        }if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "countermade") {
           return (
             <div className="btn-toolbar">
               <Button bsStyle="info" pullRight fill type="submit" onClick={() => { this.counterofferresponse("accepted") }}>
@@ -204,6 +200,17 @@ class AllOffers extends Component {
             </div>
           )
         }
+       // console.log("**row.userName" + this.state.offerAccepter)
+       // if ((row.user.userName == localStorage.getItem("userId") || this.state.offerAccepter==localStorage.getItem("userId")) & row.offerStatus == "InTransaction") {
+        //  return (
+         //   <div class="btn-toolbar">
+          //    <Link bsStyle="info" pullRight fill type="submit" onClick={() => {this.props.history.push('/admin/transfermoney');}}>
+           //     Transfer Money
+           //         </Link>
+        //    </div>
+       //   )
+       // }
+
 
       }
     }
@@ -223,19 +230,16 @@ class AllOffers extends Component {
       console.log("**" + res.data)
     });
 
-    window.location.reload(false)
   }
 
   settransactionval = (row) => {
    // e.preventDefault()
-    console.log("row valye is---"+row.id)
-    this.setState({othersofferid:row.id})
+    console.log(row)
     let transaction = {
-      myofferid: this.state.myofferid,
-      othersofferid:this.state.othersofferid,
-      userName: localStorage.getItem("userId"),
-      nickName: localStorage.getItem("nickName"),
-      offerAccepter:  row.user.userName,
+      id: row.id,
+      userName: row.user.userName,
+      nickName: row.user.nickName,
+      offerAccepter: localStorage.getItem("userId"),
       sourceCountry: row.sourceCountry,
       sourceCurrency: row.sourceCurrency,
       remitAmountSource: row.remitAmountSource,
@@ -254,8 +258,9 @@ class AllOffers extends Component {
 
       split_exchange_partie1: "",
       split_exchange_partie2: "",
-      split_exchange_partie3: "",
-      myoffer:[]
+      split_exchange_partie3: ""
+
+
     }
 
     console.log('transaction => ' + JSON.stringify(transaction));
@@ -266,38 +271,27 @@ class AllOffers extends Component {
     let userid = localStorage.getItem("userId")
     console.log("**offerAccepter" + this.state.offerAccepter)
     DirectExchangeService.exchangeaction(userid, action).then((res) => {
+      // this.setState({ offers: res.data });
+      // console.log("**" + this.state.offers)
       this.showAlert("Success -- Offer Accepted")
+      //this.props.history.push('/admin/alloffers');
     });
     this.setState({offerAccepter:localStorage.getItem("userId")})
+    
   }
 
   showAlert(msg) {
 		alert(msg);
 	  }
-  counteroffer = () => {
-    let flag=0;
-    DirectExchangeService.getSingleAutomatchingoffers(this.state.rowval.id).then((res) => {
-      this.setState({ myoffer: res.data });
-      if (this.state.myoffer.length > 0) {
-       
-        this.state.myoffer.map(img => {
-          console.log("iddddddddddd"+img.id)
-          this.setState({ myofferid: img.id})
-          flag=1
-        });
-
-        if(flag==1){
-          let transaction = this.settransactionval(this.state.rowval)
-          DirectExchangeService.counterOffer(transaction).then((res) => {
-             this.setState({ offers: res.data });
-             console.log("**" + this.state.offers)
-            console.log("**" + res.data)
-          });
-        }
-      }
+  counteroffer = (e) => {
+    e.preventDefault()
+    let transaction = this.settransactionval(this.state.rowval)
+    DirectExchangeService.counterOffer(transaction).then((res) => {
+      // this.setState({ offers: res.data });
+      // console.log("**" + this.state.offers)
+      console.log("**" + res.data)
     });
-    
- 
+
   }
 
   constructor(props) {
@@ -307,9 +301,6 @@ class AllOffers extends Component {
       offerAccepter:'',
       offers: [],
       rowval: [],
-      usersoffers:[],
-      myofferid:'',
-      othersofferid:'',
       newremitAmount: '0.00'
     }
 
@@ -338,30 +329,12 @@ class AllOffers extends Component {
 
   };
   componentDidMount() {
+   
     DirectExchangeService.listAllExchangeOffer().then((res) => {
       this.setState({ offers: res.data });
-      console.log("**" + JSON.stringify(this.state.offers))
+      console.log("**" + this.state.offers)
     });
-  
-  }
 
-  countusersOffers() {
-    const uname = localStorage.getItem("userId");
-    if (this.state.offers.length > 0) {
-      this.state.offers.map(img => {
-        console.log(img)
-
-        if (uname.indexOf(img.user.userName) === -1) {
-          this.state.usersoffers.push(img)
-          console.log(this.state.usersoffers)
-        }
-      });
-    }
-    if (this.state.usersoffers.length >0) {
-      return true
-    } else {
-      return false
-    }
   }
 
   render() {
@@ -374,7 +347,7 @@ class AllOffers extends Component {
             <Col md={16}>
 
             <div>
-                  <Button  bsStyle="info" pullRight fill type="submit" onClick={event => { event.preventDefault();this.componentDidMount() }}>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
                     Refresh
                         </Button>
                 </div>

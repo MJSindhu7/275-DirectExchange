@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.sjsu.cmpe275.finalproject.model.Offers;
 import edu.sjsu.cmpe275.finalproject.model.Transaction;
 import edu.sjsu.cmpe275.finalproject.services.TransactionService;
 import edu.sjsu.cmpe275.finalproject.services.PostExchangeOfferService;
@@ -26,6 +28,9 @@ public class TransactionController {
 
 	@Autowired
 	PostExchangeOfferService posthangeservice;
+	
+	@Autowired
+	AutoMatchingController auto;
 
 	@PostMapping("/directaccept")
 	public ResponseEntity starttransactionforaccept(@RequestBody Transaction trans) {
@@ -52,6 +57,31 @@ public class TransactionController {
 
 	@PostMapping("/counteroffer")
 	public ResponseEntity starttransactionforcounteroffer(@RequestBody Transaction trans) {
+		try {
+			directexchangeservice.counterOffer(trans);
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+//	@PostMapping("/counteroffer")
+//	public ResponseEntity starttransactionforcounteroffer(@RequestBody Offers trans) {
+//		try {
+//			ResponseEntity<List<Offers>> singlematching = auto.getSingleAutoMatchedOffers(trans.getId());
+//			System.out.println(trans);
+//			for(int i=0;i<singlematching.)
+//		//	directexchangeservice.counterOffer(trans);
+//			return new ResponseEntity<>(null, HttpStatus.OK);
+//		} catch (Exception e) {
+//			System.err.println(e);
+//			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//		}
+//	}
+	
+	@PostMapping("/acceptcounteroffer")
+	public ResponseEntity acceptcounteroffer(@RequestBody Transaction trans) {
 		try {
 			directexchangeservice.counterOffer(trans);
 			return new ResponseEntity<>(null, HttpStatus.OK);

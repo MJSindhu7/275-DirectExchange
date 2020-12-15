@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import edu.sjsu.cmpe275.finalproject.model.Offers;
 import edu.sjsu.cmpe275.finalproject.model.Transaction;
@@ -53,53 +52,22 @@ public class PostExchangeOfferService {
 			postexchangeofferrepository.deleteById(id);
 		}
 		
-		
-		public int updateMyStatus(Transaction trans,String status) {
+		public String updateStatus(Transaction trans,String status) {
 
 			try {
 
-				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getMyofferid());
+				Optional<Offers> _offer = findOfferById(trans.getId());
 				Offers _postOffer = null;
 				if (_offer.isPresent()) {
 					_postOffer = _offer.get();
 					_postOffer.setOfferStatus(status);
-					_postOffer.setOfferaccepterid(trans.getOthersofferid());
-					
-					postexchangeofferrepository.save(_postOffer);
-					 //offerservice.updateOfferStaatus(trans.getId(),status);
-					
+					_postOffer = saveExchangeOffer(_postOffer);
 				}
 
-				return 0;
+				return "Ok";
 			} catch (Exception e) {
 				System.err.println(e);
-				return 1;
+				return "Error";
 			}
 		}
-		
-		public int updateOthersStatus(Transaction trans,String status) {
-
-			try {
-
-				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getOthersofferid());
-				Offers _postOffer = null;
-				if (_offer.isPresent()) {
-					_postOffer = _offer.get();
-					_postOffer.setOfferStatus(status);
-					_postOffer.setOfferaccepterid(trans.getMyofferid());
-					
-					postexchangeofferrepository.save(_postOffer);
-					 //offerservice.updateOfferStaatus(trans.getId(),status);
-					
-				}
-
-				return 0;
-			} catch (Exception e) {
-				System.err.println(e);
-				return 1;
-			}
-		}
-		
-		
-		
 	}

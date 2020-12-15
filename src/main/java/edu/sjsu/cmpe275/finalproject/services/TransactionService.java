@@ -1,11 +1,22 @@
 package edu.sjsu.cmpe275.finalproject.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import edu.sjsu.cmpe275.finalproject.model.Offers;
 import edu.sjsu.cmpe275.finalproject.model.Transaction;
+import edu.sjsu.cmpe275.finalproject.repository.PostExchangeOfferRepository;
 import edu.sjsu.cmpe275.finalproject.repository.TransactionRepository;
 
 @Service
@@ -61,12 +72,11 @@ public class TransactionService {
 			offerstatus = "InTransaction";
 			//trans.setOfferStatus(offerstatus);
 			//transrepo.save(trans);
-			//offerservice.updateStatus(trans, offerstatus);
+			offerservice.updateStatus(trans, offerstatus);
 			enterInTransactionMode(trans, "Expired");
 		}
 
 	}
-	
 
 	public void counterOffer(Transaction trans) throws Exception {
 		boolean counterofferaccepted = false;
@@ -82,7 +92,7 @@ public class TransactionService {
 
 			offerstatus = "countermade";
 			// transrepo.save(trans);
-			offerservice.updateMyStatus(trans, "countermade");
+			offerservice.updateStatus(trans, "countermade");
 
 			stoploop = true;
 		}
@@ -91,7 +101,9 @@ public class TransactionService {
 
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && stoploop) {
 
-			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter()) && getDecision().equalsIgnoreCase("accepted")) {
+			System.out.println(getDecision() + "--" + getUsername() + "--" + trans.getUserName());
+
+			if (getUsername().equalsIgnoreCase(trans.getUserName()) && getDecision().equalsIgnoreCase("accepted")) {
 				counterofferaccepted = true;
 				stoploop = false;
 			}
@@ -103,13 +115,12 @@ public class TransactionService {
 			offerstatus = "Open";
 			trans.setOfferStatus(offerstatus);
 			transrepo.save(trans);
-			offerservice.updateMyStatus(trans, offerstatus);
+			offerservice.updateStatus(trans, offerstatus);
 
 		} else {
 
 			offerstatus = "InTransaction";
-			offerservice.updateMyStatus(trans, offerstatus);
-			offerservice.updateOthersStatus(trans, offerstatus);
+			offerservice.updateStatus(trans, offerstatus);
 			enterInTransactionMode(trans, "Open");
 		}
 	}
@@ -140,7 +151,7 @@ public class TransactionService {
 		trans.setTimestamp(dt);
 		transrepo.save(trans);
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
-			
+
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())
 					&& getDecision().equalsIgnoreCase("transfered")) {
 				offeraccepter = true;
@@ -170,8 +181,7 @@ public class TransactionService {
 
 				trans.setOfferStatus(offerstatus);
 				transrepo.save(trans);
-				offerservice.updateMyStatus(trans, offerstatus);
-				offerservice.updateOthersStatus(trans, offerstatus);
+				offerservice.updateStatus(trans, offerstatus);
 				fetchbankbalance = false;
 				transactiondone = true;
 				offerstatus="";
@@ -191,12 +201,12 @@ public class TransactionService {
 		if (transactiondone == false) {
 			offerstatus = ifnotransaction;
 			trans.setOfferStatus(offerstatus);
-			offerservice.updateMyStatus(trans, offerstatus);
-			offerservice.updateOthersStatus(trans, offerstatus);
+			offerservice.updateStatus(trans, offerstatus);
 			transrepo.save(trans);
 
 		}
 	}
+	
 
 	private double serviceFeeSource(Transaction trans) {
 
