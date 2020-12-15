@@ -35,12 +35,18 @@ CREATE TABLE offers (
 	split_exchange BOOLEAN NOT NULL DEFAULT 1, 
 	new_remit_amount DECIMAL(9,2),
 	offer_status VARCHAR(255) NOT NULL,
+	offeraccepterid BIGINT,
+	split1accepterid BIGINT,
+	split2accepterid BIGINT,
+	split3accepterid BIGINT,
 	PRIMARY KEY (id));
 
 
 CREATE TABLE transaction (
 	id BIGINT auto_increment, 
-	timestamp datetime DEFAULT CURRENT_TIMESTAMP, 
+	timestamp datetime DEFAULT CURRENT_TIMESTAMP,
+	myofferid  BIGINT,
+	othersofferid BIGINT,
 	user_name VARCHAR(255) NOT NULL, 
 	nick_name VARCHAR(255), 
 	source_country VARCHAR(255) NOT NULL,

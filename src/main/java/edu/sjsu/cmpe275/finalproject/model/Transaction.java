@@ -24,6 +24,12 @@ public class Transaction {
 	@Temporal(TemporalType.TIMESTAMP)
 	private java.util.Date Timestamp;
 	
+	@Column(name = "myofferid")
+	private long myofferid;
+	
+	@Column(name = "othersofferid")
+	private long othersofferid;
+	
 	@Column(name = "offer_accepter")
 	private String offerAccepter;
 	
@@ -298,6 +304,24 @@ public class Transaction {
 	public void setRemitAmountSplit3(double remitAmountSplit3) {
 		this.remitAmountSplit3 = remitAmountSplit3;
 	}
+
+	public long getMyofferid() {
+		return myofferid;
+	}
+
+	public void setMyofferid(long myofferid) {
+		this.myofferid = myofferid;
+	}
+
+	public long getOthersofferid() {
+		return othersofferid;
+	}
+
+	public void setOthersofferid(long othersofferid) {
+		this.othersofferid = othersofferid;
+	}
+
+
 
 
 	
