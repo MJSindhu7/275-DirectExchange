@@ -91,10 +91,10 @@ class Login extends Component {
               nickName: this.state.nickname,
               rating: 0,
             };
-            localStorage.setItem("userId", this.state.signUpEmail);
+            //localStorage.setItem("userId", this.state.signUpEmail);
             try {
               let res = await DirectExchangeService.getNickName(
-                localStorage.getItem("userId")
+                this.state.signUpEmail
               );
               if (res) {
                 this.setState({
@@ -133,11 +133,13 @@ class Login extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((user) => {
+      .then(async (user) => {
         this.setState({
           signInShow: false,
         });
         localStorage.setItem("userId", this.state.email);
+        let res = await DirectExchangeService.getNickName(this.state.email);
+        localStorage.setItem("nickName", res.data);
         console.log("Success");
         this.state.email = "";
         this.state.password = "";
@@ -175,6 +177,7 @@ class Login extends Component {
   };
   fromEmail = (userEmail, userName) => {
     {
+      localStorage.setItem("nickName", userName);
       DirectExchangeService.getNickName(localStorage.getItem("userId"))
         .then((res) => {
           this.state.temp = res.data;
