@@ -78,7 +78,7 @@ public class AutoMatchingController {
 	}
 
 	@GetMapping("/getSplitOffers/{offer_id}")  //{user_name}/ @PathVariable(required = true, name = "user_name") String userName,
-	public ResponseEntity<List<Offers[]>> getSplitAutoMatchedOffers(@PathVariable(required = true, name = "offer_id") Long offerID){
+	public ResponseEntity<List<Offers>> getSplitAutoMatchedOffers(@PathVariable(required = true, name = "offer_id") Long offerID){
 
 		List<Offers> allOffers = null;
 		Offers presentOffer = null;
@@ -160,8 +160,13 @@ public class AutoMatchingController {
 				}
 			}
 			System.out.println("Automatching offers"+splitMatchOffers.toString());
-
-			return new ResponseEntity<List<Offers[]>>(splitMatchOffers,HttpStatus.OK);
+			LinkedList<Offers> allsplitoffers = new LinkedList<Offers>();
+			for(Offers[]elemnts:splitMatchOffers) {
+				allsplitoffers.add(elemnts[0]);
+				allsplitoffers.add(elemnts[1]);
+				
+			}
+			return new ResponseEntity<List<Offers>>(allsplitoffers,HttpStatus.OK);
 		} catch (Exception e) {
 			System.err.println(e);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

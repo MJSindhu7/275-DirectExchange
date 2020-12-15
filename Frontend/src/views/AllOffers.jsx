@@ -13,7 +13,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from "react-router-dom";
 
-const notify = () => toast("Wow so easy !");
 class AllOffers extends Component {
 
   columns = [
@@ -134,7 +133,7 @@ class AllOffers extends Component {
       }
       ,
       formatter: (cell, row, rowIndex, formatExtraData) => {
-        console.log("username is"+row.user.userName)
+        console.log("useroffer lengths"+this.state.usersoffers.length)
         if (row.user.userName != localStorage.getItem("userId") & row.offerStatus == "Open") {
           if (row.counteroffers & row.splitExchange) {
             return (
@@ -148,8 +147,6 @@ class AllOffers extends Component {
                     </Button>
 
                 <Button bsStyle="success"  fill type="submit" onClick={event => { event.preventDefault();this.directacceptoffer(row) }}>
-
-
                   Accept
                      </Button></div>
             )
@@ -191,7 +188,7 @@ class AllOffers extends Component {
           }
           
          
-        }if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "countermade") {
+        }if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "countermade" & this.state.usersoffers.length>0) {
           return (
             <div className="btn-toolbar">
               <Button bsStyle="info" pullRight fill type="submit" onClick={() => { this.counterofferresponse("accepted") }}>
@@ -200,17 +197,6 @@ class AllOffers extends Component {
             </div>
           )
         }
-       // console.log("**row.userName" + this.state.offerAccepter)
-       // if ((row.user.userName == localStorage.getItem("userId") || this.state.offerAccepter==localStorage.getItem("userId")) & row.offerStatus == "InTransaction") {
-        //  return (
-         //   <div class="btn-toolbar">
-          //    <Link bsStyle="info" pullRight fill type="submit" onClick={() => {this.props.history.push('/admin/transfermoney');}}>
-           //     Transfer Money
-           //         </Link>
-        //    </div>
-       //   )
-       // }
-
 
       }
     }
@@ -230,6 +216,7 @@ class AllOffers extends Component {
       console.log("**" + res.data)
     });
 
+    window.location.reload(false)
   }
 
   settransactionval = (row) => {
@@ -277,7 +264,6 @@ class AllOffers extends Component {
       //this.props.history.push('/admin/alloffers');
     });
     this.setState({offerAccepter:localStorage.getItem("userId")})
-    
   }
 
   showAlert(msg) {
@@ -291,7 +277,7 @@ class AllOffers extends Component {
       // console.log("**" + this.state.offers)
       console.log("**" + res.data)
     });
-
+ 
   }
 
   constructor(props) {
@@ -301,6 +287,7 @@ class AllOffers extends Component {
       offerAccepter:'',
       offers: [],
       rowval: [],
+      usersoffers:[],
       newremitAmount: '0.00'
     }
 
@@ -329,12 +316,30 @@ class AllOffers extends Component {
 
   };
   componentDidMount() {
-   
     DirectExchangeService.listAllExchangeOffer().then((res) => {
       this.setState({ offers: res.data });
       console.log("**" + this.state.offers)
     });
+  
+  }
 
+  countusersOffers() {
+    const uname = localStorage.getItem("userId");
+    if (this.state.offers.length > 0) {
+      this.state.offers.map(img => {
+        console.log(img)
+
+        if (uname.indexOf(img.user.userName) === -1) {
+          this.state.usersoffers.push(img)
+          console.log(this.state.usersoffers)
+        }
+      });
+    }
+    if (this.state.usersoffers.length >0) {
+      return true
+    } else {
+      return false
+    }
   }
 
   render() {
@@ -347,7 +352,7 @@ class AllOffers extends Component {
             <Col md={16}>
 
             <div>
-                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={event => { event.preventDefault();this.componentDidMount() }}>
                     Refresh
                         </Button>
                 </div>

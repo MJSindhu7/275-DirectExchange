@@ -1,22 +1,11 @@
 package edu.sjsu.cmpe275.finalproject.services;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
-import javax.mail.MessagingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import edu.sjsu.cmpe275.finalproject.model.Offers;
 import edu.sjsu.cmpe275.finalproject.model.Transaction;
-import edu.sjsu.cmpe275.finalproject.repository.PostExchangeOfferRepository;
 import edu.sjsu.cmpe275.finalproject.repository.TransactionRepository;
 
 @Service
@@ -77,6 +66,7 @@ public class TransactionService {
 		}
 
 	}
+	
 
 	public void counterOffer(Transaction trans) throws Exception {
 		boolean counterofferaccepted = false;
@@ -151,7 +141,7 @@ public class TransactionService {
 		trans.setTimestamp(dt);
 		transrepo.save(trans);
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
-
+			System.out.println("Username---"+getUsername()+"----accepter"+trans.getOfferAccepter()+"-----"+trans.getUserName()+"--"+getDecision());
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())
 					&& getDecision().equalsIgnoreCase("transfered")) {
 				offeraccepter = true;
