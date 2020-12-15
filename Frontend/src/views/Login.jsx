@@ -177,6 +177,9 @@ class Login extends Component {
   };
   fromEmail = (userEmail, userName) => {
     {
+      if (!userEmail || !userName) {
+        return;
+      }
       localStorage.setItem("nickName", userName);
       DirectExchangeService.getNickName(localStorage.getItem("userId"))
         .then((res) => {
@@ -189,7 +192,7 @@ class Login extends Component {
         DirectExchangeService.addUsertoDirectExchange({
           userName: userEmail,
           nickName: userName,
-          rating: 'N/A',
+          rating: "N/A",
         })
           .then((res) => {
             this.props.history.push("/admin/dashboard");
