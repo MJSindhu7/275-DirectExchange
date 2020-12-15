@@ -9,6 +9,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import { Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 
 class Automatch extends Component {
@@ -106,15 +107,16 @@ class Automatch extends Component {
         if (row.user.userName != localStorage.getItem("userId") & row.offerStatus == "Open") {
           if (row.counteroffers & row.splitExchange) {
             return (
-              <div class="btn-toolbar"> <Button bsStyle="info" pullRight fill type="submit" onClick={() => { this.setState({ rowval: row }); this.handleShow() }}>
+              <div className="btn-toolbar"> 
+              <Button bsStyle="info"  fill type="submit" onClick={event => { event.preventDefault();this.setState({ rowval: row }); this.handleShow() }}>
                 Counter
                     </Button>
 
-                <Button bsStyle="info" pullRight fill type="submit" onClick={this.onsplitoffer}>
+                <Button bsStyle="info"  fill type="submit" onClick={this.onsplitoffer}>
                   Split
                     </Button>
 
-                <Button bsStyle="success" pullRight fill type="submit" onClick={() => { this.directacceptoffer(row) }}>
+                <Button bsStyle="success"  fill type="submit" onClick={event => { event.preventDefault();this.directacceptoffer(row) }}>
 
 
                   Accept
@@ -123,15 +125,15 @@ class Automatch extends Component {
           }
           else if (row.counteroffers) {
             return (
-              <div class="btn-toolbar">
-                <Button bsStyle="success" fill type="submit" onClick={() => { this.directacceptoffer(row) }}>
-                  Accept Offer
-                     </Button>
+              <div className="btn-toolbar">
+              <Button bsStyle="success"  fill type="submit" onClick={() => { this.directacceptoffer(row) }}>
+                Accept Offer
+                   </Button>
 
-                <Button bsStyle="info"  fill type="submit" onClick={() => { this.counteroffer(row) }}>
-                  Counter Offer
-                    </Button>
-              </div>
+              <Button bsStyle="info"  fill type="submit" onClick={() => { this.setState({ rowval: row }); this.handleShow() }}>
+                Counter Offer
+                  </Button>
+            </div>
             )
           }
 
@@ -155,6 +157,14 @@ class Automatch extends Component {
                 <Button bsStyle="success" pullLeft fill type="submit" onClick={() => { this.directacceptoffer(row) }}>
                   Accept Offer
                 </Button></div>)
+          }if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "countermade") {
+            return (
+              <div className="btn-toolbar">
+                <Button bsStyle="info" pullRight fill type="submit" onClick={() => { this.counterofferresponse("accepted") }}>
+                  Accept Counter Offer
+                      </Button>
+              </div>
+            )
           }
         }
       }
@@ -162,66 +172,95 @@ class Automatch extends Component {
 
   ];
 
-  showAlert(msg) {
-		alert(msg);
-	  }
-  directacceptoffer = (row) => {
-    console.log(row)
-    let transaction = this.settransactionval(row)
-    DirectExchangeService.acceptOffer(transaction).then((res) => {
-      // this.setState({ offers: res.data });
-      // console.log("**" + this.state.offers)
-      this.showAlert("Success -- Accepted Offer")
-      //this.props.history.push('/admin/transfermoney');
-      console.log("**" + res.data)
+  handleClose = (e) => {
+    this.setState({
+      show: false,
     });
+    this.counteroffer(e)
+   };
 
-  }
+  handleShow = () => {
+    this.setState({
+      show: true,
+    });
+  };
+
+ 
+  directacceptoffer = (row) => {
+    // e.preventDefault()
+     console.log(row)
+     let transaction = this.settransactionval(row)
+     DirectExchangeService.acceptOffer(transaction).then((res) => {
+       // this.setState({ offers: res.data });
+       // console.log("**" + this.state.offers)
+       this.showAlert("Success -- Offer Accepted")
+      // this.props.history.push('/admin/transfermoney');
+       console.log("**" + res.data)
+     });
+ 
+   }
 
   settransactionval = (row) => {
-    console.log(row)
-    let transaction = {
-      id: row.id,
-      userName: row.user.userName,
-      nickName: row.user.nickName,
-      offerAccepter: localStorage.getItem("userId"),
-      sourceCountry: row.sourceCountry,
-      sourceCurrency: row.sourceCurrency,
-      remitAmount: row.remitAmount,
-      destinationCountry: row.destinationCountry,
-      destinationCurrency: row.destinationCurrency,
-      exchangeRate: row.exchangeRate,
-      expirationDate: row.expirationDate,
-      counteroffers: row.counteroffers,
-      newRemitAmount: this.state.newremitAmount,
-      splitExchange: row.splitExchange,
-      offerStatus: "InTransaction",
-      // split_exchange_partie1:row.split_exchange_partie1,
-      // split_exchange_partie2:row.split_exchange_partie2,
-      // split_exchange_partie3:row.split_exchange_partie3
-
-      split_exchange_partie1: "",
-      split_exchange_partie2: "",
-      split_exchange_partie3: ""
-
-
-    }
-
-    console.log('transaction => ' + JSON.stringify(transaction));
-    return transaction
-  }
-
-  counteroffer = () => {
-    let transaction = this.settransactionval(this.state.rowval)
-    DirectExchangeService.counterOffer(transaction).then((res) => {
-      // this.setState({ offers: res.data });
-      // console.log("**" + this.state.offers)
-      this.showAlert("Success -- You Made Counter Offer")
-     // this.props.history.push('/admin/alloffers');
-      console.log("**" + res.data)
-    });
-
-  }
+    // e.preventDefault()
+     console.log(row)
+     let transaction = {
+       id: row.id,
+       userName: row.user.userName,
+       nickName: row.user.nickName,
+       offerAccepter: localStorage.getItem("userId"),
+       sourceCountry: row.sourceCountry,
+       sourceCurrency: row.sourceCurrency,
+       remitAmountSource: row.remitAmountSource,
+       remitAmountDestination: row.remitAmountDestination,
+       destinationCountry: row.destinationCountry,
+       destinationCurrency: row.destinationCurrency,
+       exchangeRate: row.exchangeRate,
+       expirationDate: row.expirationDate,
+       counteroffers: row.counteroffers,
+       newRemitAmount: this.state.newremitAmount,
+       splitExchange: row.splitExchange,
+       //offerStatus: "InTransaction",
+       // split_exchange_partie1:row.split_exchange_partie1,
+       // split_exchange_partie2:row.split_exchange_partie2,
+       // split_exchange_partie3:row.split_exchange_partie3
+ 
+       split_exchange_partie1: "",
+       split_exchange_partie2: "",
+       split_exchange_partie3: ""
+ 
+ 
+     }
+ 
+     console.log('transaction => ' + JSON.stringify(transaction));
+     return transaction
+   }
+ 
+   counterofferresponse = (action) => {
+     let userid = localStorage.getItem("userId")
+     console.log("**offerAccepter" + this.state.offerAccepter)
+     DirectExchangeService.exchangeaction(userid, action).then((res) => {
+       // this.setState({ offers: res.data });
+       // console.log("**" + this.state.offers)
+       this.showAlert("Success -- Offer Accepted")
+       //this.props.history.push('/admin/alloffers');
+     });
+     this.setState({offerAccepter:localStorage.getItem("userId")})
+     
+   }
+ 
+   showAlert(msg) {
+     alert(msg);
+     }
+   counteroffer = (e) => {
+     e.preventDefault()
+     let transaction = this.settransactionval(this.state.rowval)
+     DirectExchangeService.counterOffer(transaction).then((res) => {
+       // this.setState({ offers: res.data });
+       // console.log("**" + this.state.offers)
+       console.log("**" + res.data)
+     });
+ 
+   }
 
 
 
@@ -236,6 +275,13 @@ class Automatch extends Component {
       show: ''
     }
   }
+
+  setNewRemitAmount = (evt) => {
+    this.setState({
+      newremitAmount: evt.target.value,
+    });
+
+  };
 
   counterofferresponse = (action) => {
     let userid = localStorage.getItem("userId")
@@ -316,6 +362,30 @@ class Automatch extends Component {
 
                 }
               />
+              <Modal show={this.state.show} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>CounterOffer</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="form-group">
+                    <label htmlFor="exampleInputEmail1">Enter New Remit Amount</label>
+                    <input
+                      onChange={this.setNewRemitAmount}
+                      type="text"
+                      className="form-control"
+                      id="newremitamount"
+                      aria-describedby="emailHelp"
+                      placeholder="Enter New Remit Amount"
+                      value={this.state.newremitAmount}
+                    />
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={this.handleClose}>
+                    Close
+            </Button>
+                </Modal.Footer>
+              </Modal>
 
             </Col>
           </Row>

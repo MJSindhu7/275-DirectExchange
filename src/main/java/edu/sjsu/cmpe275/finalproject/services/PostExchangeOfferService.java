@@ -28,6 +28,11 @@ public class PostExchangeOfferService {
 			return alloffers;
 		}
 		
+		public List<Offers> findmyopenoffers(String username,String status) {
+			List<Offers> alloffers = postexchangeofferrepository.getOpenOffers(username,status);
+			return alloffers;
+		}
+		
 		public Optional<Offers> findOfferById(long id) {
 			Optional<Offers> offer = postexchangeofferrepository.findById(id);
 			return offer;
@@ -69,5 +74,9 @@ public class PostExchangeOfferService {
 				System.err.println(e);
 				return "Error";
 			}
+		}
+
+		public List<Offers> getOpenOffers(String offerAccepter, String string) {
+			return postexchangeofferrepository.getOpenOffers(offerAccepter,string);
 		}
 	}

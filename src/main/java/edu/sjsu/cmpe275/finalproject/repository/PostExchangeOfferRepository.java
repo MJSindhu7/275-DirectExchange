@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import edu.sjsu.cmpe275.finalproject.model.Offers;
+import edu.sjsu.cmpe275.finalproject.model.Transaction;
 
 
 @Repository
@@ -25,6 +26,12 @@ public interface PostExchangeOfferRepository extends JpaRepository<Offers, Long>
 	 @Modifying(clearAutomatically = true)
 	    @Query("UPDATE Offers c SET c.offerStatus = :offerStatus WHERE c.id = :id")
 	    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
+	 
+	 final static String GET_Open_Offers = "select * from Offers e where e.user_name=:user_name and e.offer_status=:offer_status";
+	 @Query(value=GET_Open_Offers, nativeQuery = true)
+	 List<Offers> getOpenOffers(@Param("user_name") String username,@Param("offer_status") String offer_status);
+
+	
 }
 
 

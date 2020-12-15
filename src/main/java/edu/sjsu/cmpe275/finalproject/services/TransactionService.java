@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,6 +63,7 @@ public class TransactionService {
 
 	@Autowired
 	TransactionRepository transrepo;;
+	
 
 	public void directAcceptOffer(Transaction trans) throws Exception {
 
@@ -141,15 +148,18 @@ public class TransactionService {
 		trans.setOfferStatus(offerstatus);
 		
 		
+	
+		email.sendMailfunc(trans.getUserName(), "Please Send Money To Direct Exchange account in 10min");
+		email.sendMailfunc(trans.getOfferAccepter(), "Please Send Money To Direct Exchange account in 10min");
+
 		java.util.Date dt = new java.util.Date();
 
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		email.sendMailfunc(trans.getUserName(), "Please Send Money To Direct Exchange account in 10min");
-		email.sendMailfunc(trans.getOfferAccepter(), "Please Send Money To Direct Exchange account in 10min");
-
 		trans.setTimestamp(dt);
 		transrepo.save(trans);
+		Transaction otherperson=getsimilaroffer(trans);
+		
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
 
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())
@@ -178,10 +188,12 @@ public class TransactionService {
 			
 			
 				
-
+				otherperson.setOfferStatus(offerstatus);
 				trans.setOfferStatus(offerstatus);
 				transrepo.save(trans);
+				transrepo.save(otherperson);
 				offerservice.updateStatus(trans, offerstatus);
+				offerservice.updateStatus(otherperson, offerstatus);
 				fetchbankbalance = false;
 				transactiondone = true;
 				offerstatus="";
@@ -200,13 +212,59 @@ public class TransactionService {
 
 		if (transactiondone == false) {
 			offerstatus = ifnotransaction;
+			otherperson.setOfferStatus(offerstatus);
 			trans.setOfferStatus(offerstatus);
-			offerservice.updateStatus(trans, offerstatus);
 			transrepo.save(trans);
+			transrepo.save(otherperson);
+			offerservice.updateStatus(trans, offerstatus);
+			offerservice.updateStatus(otherperson, offerstatus);
+			
 
 		}
 	}
 	
+	private Transaction getsimilaroffer(Transaction trans) {
+		List<Offers> offers =offerservice.getOpenOffers(trans.getOfferAccepter(), "Open");
+		Transaction toff = new Transaction();
+		for(int i=0;i<offers.size();i++) {
+			Offers off=offers.get(i);
+			if(off.getSourceCountry().equalsIgnoreCase(trans.getDestinationCountry()) && off.getDestinationCountry().equalsIgnoreCase(trans.getSourceCountry())) {
+				
+				Boolean cond1 = off.getRemitAmountDestination()*0.9<=trans.getRemitAmountSource() && trans.getRemitAmountSource()<=off.getRemitAmountDestination()*1.1; 
+				Boolean cond2 = off.getRemitAmountSource()*0.9<=trans.getRemitAmountDestination() && trans.getRemitAmountDestination()<=off.getRemitAmountSource()*1.1;
+				if( cond1 && cond2 ) {
+					
+					
+					java.util.Date dt = new java.util.Date();
+
+					java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+					toff.setTimestamp(dt);
+					toff.setMyofferid(off.getId());
+					toff.setOthersofferid(trans.getId());
+					toff.setOfferAccepter(trans.getUserName());
+					toff.setUserName(off.getUser().getUserName());
+					toff.setNickName(off.getUser().getNickName());
+					toff.setSourceCountry(off.getSourceCountry());
+					toff.setSourceCurrency(off.getSourceCurrency());
+					toff.setDestinationCountry(off.getDestinationCountry());
+					toff.setDestinationCurrency(off.getDestinationCurrency());
+					toff.setExchangeRate(off.getExchangeRate());
+				    toff.setExpirationDate(off.getExpirationDate());
+				    toff.setCounteroffers(off.isCounteroffers());
+					toff.setRemitAmountSource(off.getRemitAmountSource());
+					toff.setRemitAmountDestination(off.getRemitAmountDestination());
+					toff.setNewRemitAmount(off.getNewRemitAmount());
+					toff.setSplitExchange(off.isSplitExchange());
+					toff.setOfferStatus("InTransacation");
+					toff.setServiceFee(0.0005);
+					transrepo.save(toff);
+					offerservice.updateStatus(toff,"InTransacation" );
+				}
+			}
+		}
+		return toff;
+	}
 
 	private double serviceFeeSource(Transaction trans) {
 
