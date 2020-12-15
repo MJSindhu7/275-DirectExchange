@@ -139,6 +139,11 @@ class Dashboard extends Component {
         <Grid fluid>
           <Row>
           <Row>
+          <div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
             <Col lg={4} sm={6}>
               <StatsCard
                bigIcon={<i className="fa fa-twitter text-info" />}

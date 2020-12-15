@@ -172,7 +172,7 @@ class Automatch extends Component {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
       this.showAlert("Success -- Accepted Offer")
-      this.props.history.push('/admin/transfermoney');
+      //this.props.history.push('/admin/transfermoney');
       console.log("**" + res.data)
     });
 
@@ -217,7 +217,7 @@ class Automatch extends Component {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
       this.showAlert("Success -- You Made Counter Offer")
-      this.props.history.push('/admin/alloffers');
+     // this.props.history.push('/admin/alloffers');
       console.log("**" + res.data)
     });
 
@@ -261,6 +261,11 @@ class Automatch extends Component {
       <div>
         <Grid fluid>
           <Row>
+          <div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
             <Col md={16}>
               <Card
                 title="Auto Matching Offers"

@@ -70,7 +70,8 @@ public class TransactionService {
 
 			// 2.update offer status
 			offerstatus = "InTransaction";
-			transrepo.save(trans);
+			//trans.setOfferStatus(offerstatus);
+			//transrepo.save(trans);
 			offerservice.updateStatus(trans, offerstatus);
 			enterInTransactionMode(trans, "Expired");
 		}
@@ -78,7 +79,6 @@ public class TransactionService {
 	}
 
 	public void counterOffer(Transaction trans) throws Exception {
-		System.out.println("samee");
 		boolean counterofferaccepted = false;
 		boolean stoploop = false;
 		String offerstatus = "";
@@ -133,12 +133,14 @@ public class TransactionService {
 		boolean offerproposer = false;
 		boolean offeraccepter = false;
 		boolean transactiondone = false;
-		String offerstatus = "";
+		String offerstatus = "InTransaction";
 
 		long startTime = System.currentTimeMillis();
 		long maxDurationInMilliseconds = 10 * 60 * 1000;
-
-		transrepo.save(trans);
+		
+		trans.setOfferStatus(offerstatus);
+		
+		
 		java.util.Date dt = new java.util.Date();
 
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -147,6 +149,7 @@ public class TransactionService {
 		email.sendMailfunc(trans.getOfferAccepter(), "Please Send Money To Direct Exchange account in 10min");
 
 		trans.setTimestamp(dt);
+		transrepo.save(trans);
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
 
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())

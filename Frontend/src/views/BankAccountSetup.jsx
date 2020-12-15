@@ -85,6 +85,7 @@ class BankAccountSetup extends Component {
 
 	// step 3
 	componentDidMount() {
+		//e.preventDefault()
 		console.log("username is"+localStorage.getItem("userId"))
 		DirectExchangeService.getBankAccountsByUser(localStorage.getItem("userId")).then((res) => {
 			this.setState({ accounts: res.data });
@@ -107,11 +108,12 @@ class BankAccountSetup extends Component {
 
 		DirectExchangeService.addBankAccount(bankaccount).then(res => {
 			this.showAlert("Success -- Bank Account Added")
-			this.props.history.push('/admin/bankaccount');
+			//this.props.history.push('/admin/bankaccount');
 			window.location.reload(false)
 		});
 	}
-	cancel() {
+	cancel(e) {
+		e.preventDefault()
 		this.showAlert("Canceled -- Bank Account Not Added")
 		this.props.history.push('/admin/dashboard');
 	}
@@ -141,6 +143,11 @@ class BankAccountSetup extends Component {
 				<div className="content">
 				<Grid fluid>
 					<Row>
+					<div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
 						<Col md={5}>
 							<Card justify="center"
 								title="Add Bank Account"

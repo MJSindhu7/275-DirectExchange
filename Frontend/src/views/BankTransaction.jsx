@@ -106,8 +106,9 @@ class BankTransaction extends Component {
 		let userid=localStorage.getItem("userId")
 		DirectExchangeService.exchangeaction(userid,action).then((res) => {
 		this.showAlert("Success -- Money Transfered")
+		console.log("**" + res.data)
 		this.props.history.push('/admin/alloffers');
-		 console.log("**" + res.data)
+		
 		});
 	
 	  }
@@ -129,7 +130,11 @@ class BankTransaction extends Component {
 			<Grid fluid>
 			  <Row>
 	
-	
+			  <div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
 				<Col md={16}>
 				  <Card
 					title="All Transactions"

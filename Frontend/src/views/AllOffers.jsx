@@ -139,7 +139,7 @@ class AllOffers extends Component {
           if (row.counteroffers & row.splitExchange) {
             return (
               <div className="btn-toolbar"> 
-              <Button bsStyle="info"  fill type="submit" onClick={() => { this.setState({ rowval: row }); this.handleShow() }}>
+              <Button bsStyle="info"  fill type="submit" onClick={event => { event.preventDefault();this.setState({ rowval: row }); this.handleShow() }}>
                 Counter
                     </Button>
 
@@ -147,7 +147,7 @@ class AllOffers extends Component {
                   Split
                     </Button>
 
-                <Button bsStyle="success"  fill type="submit" onClick={() => {this.directacceptoffer(row) }}>
+                <Button bsStyle="success"  fill type="submit" onClick={event => { event.preventDefault();this.directacceptoffer(row) }}>
 
 
                   Accept
@@ -219,19 +219,21 @@ class AllOffers extends Component {
   ];
 
   directacceptoffer = (row) => {
+   // e.preventDefault()
     console.log(row)
     let transaction = this.settransactionval(row)
     DirectExchangeService.acceptOffer(transaction).then((res) => {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
       this.showAlert("Success -- Offer Accepted")
-      this.props.history.push('/admin/transfermoney');
+     // this.props.history.push('/admin/transfermoney');
       console.log("**" + res.data)
     });
 
   }
 
   settransactionval = (row) => {
+   // e.preventDefault()
     console.log(row)
     let transaction = {
       id: row.id,
@@ -249,7 +251,7 @@ class AllOffers extends Component {
       counteroffers: row.counteroffers,
       newRemitAmount: this.state.newremitAmount,
       splitExchange: row.splitExchange,
-      offerStatus: "InTransaction",
+      //offerStatus: "InTransaction",
       // split_exchange_partie1:row.split_exchange_partie1,
       // split_exchange_partie2:row.split_exchange_partie2,
       // split_exchange_partie3:row.split_exchange_partie3
@@ -272,19 +274,21 @@ class AllOffers extends Component {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
       this.showAlert("Success -- Offer Accepted")
-      this.props.history.push('/admin/alloffers');
+      //this.props.history.push('/admin/alloffers');
     });
     this.setState({offerAccepter:localStorage.getItem("userId")})
     
   }
 
-
-  counteroffer = () => {
+  showAlert(msg) {
+		alert(msg);
+	  }
+  counteroffer = (e) => {
+    e.preventDefault()
     let transaction = this.settransactionval(this.state.rowval)
     DirectExchangeService.counterOffer(transaction).then((res) => {
       // this.setState({ offers: res.data });
       // console.log("**" + this.state.offers)
-      this.props.history.push('/admin/alloffers');
       console.log("**" + res.data)
     });
 
@@ -303,11 +307,11 @@ class AllOffers extends Component {
 
   }
 
-  handleClose = () => {
+  handleClose = (e) => {
     this.setState({
       show: false,
     });
-    this.counteroffer()
+    this.counteroffer(e)
    };
 
   handleShow = () => {
@@ -335,16 +339,23 @@ class AllOffers extends Component {
 
   render() {
     return (
+
       <div className="content">
         <Grid fluid>
           <Row>
 
-
             <Col md={16}>
+
+            <div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
               <Card
                 title="All Offers"
                 content={
-
+                
+                  
                   <BootstrapTable
                     striped
                     pagination={paginationFactory()}

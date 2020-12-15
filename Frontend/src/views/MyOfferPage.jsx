@@ -179,6 +179,11 @@ class MyOfferPage extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
+          <div>
+                  <Button  bsStyle="info" pullRight fill type="submit" onClick={() => { this.componentDidMount() }}>
+                    Refresh
+                        </Button>
+                </div>
             <Col md={15}>
               <Card
                 title="My Offers"

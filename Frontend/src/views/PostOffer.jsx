@@ -41,6 +41,7 @@ class PostOffer extends Component {
   }
 
   componentDidMount() {
+    //e.preventDefault()
     DirectExchangeService.getBankAccountsByUser(localStorage.getItem("userId")).then((res) => {
       this.setState({ bankaccounts: res.data });
       console.log("**" + this.state.offers)
