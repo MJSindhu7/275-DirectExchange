@@ -69,7 +69,7 @@ public class UserController {
 		int rating = 0;
 		try {
 			allTransactionbythisUser = transactionService.getTransactionHistory(user_name);
-			int totalTransDone = allTransactionbythisUser.size();
+			double totalTransDone = (double) allTransactionbythisUser.size();
 			int failedTransCount = 0;
 			if(totalTransDone>0) {
 				for (Transaction trans : allTransactionbythisUser ) {
@@ -79,8 +79,8 @@ public class UserController {
 						failedTransCount++;
 					}
 				}
-				float ratio =  failedTransCount/totalTransDone;
-				rating = Math.round((1-ratio)*4) +1 ;
+				double ratio = 1 - (double) failedTransCount/totalTransDone;
+				rating = (int) (Math.round(ratio*4) + 1) ;
 			}
 		String strRating = "";	
 		if(rating==0) {

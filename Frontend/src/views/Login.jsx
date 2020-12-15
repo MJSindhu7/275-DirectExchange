@@ -89,7 +89,7 @@ class Login extends Component {
             let userSignUp = {
               userName: this.state.signUpEmail,
               nickName: this.state.nickname,
-              rating: 0,
+              rating: 'N/A',
             };
             //localStorage.setItem("userId", this.state.signUpEmail);
             try {
@@ -189,7 +189,7 @@ class Login extends Component {
         DirectExchangeService.addUsertoDirectExchange({
           userName: userEmail,
           nickName: userName,
-          rating: 0,
+          rating: 'N/A',
         })
           .then((res) => {
             this.props.history.push("/admin/dashboard");
