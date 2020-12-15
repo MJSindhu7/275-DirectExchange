@@ -232,6 +232,7 @@ class Automatch extends Component {
       rowfrommyoffer: this.props.location.rowfrommyoffer,
       rowval: [],
       automatch: [],
+      splitmatch:[],
       show: ''
     }
   }
@@ -249,9 +250,15 @@ class Automatch extends Component {
   componentDidMount() {
     if(this.state.rowfrommyoffer!=undefined){
     console.log("before automatch called"+this.state.rowfrommyoffer)
-    DirectExchangeService.getAutomatchingoffers(this.state.rowfrommyoffer.id).then(res => {
+    DirectExchangeService.getSingleAutomatchingoffers(this.state.rowfrommyoffer.id).then(res => {
       this.setState({ automatch: res.data });  
       console.log("automatch called"+this.state.automatch)
+   
+    });
+
+    DirectExchangeService.getSplitAutomatchingoffers(this.state.rowfrommyoffer.id).then(res => {
+      this.setState({ splitmatch: res.data });  
+      console.log("splitmatch called"+this.state.splitmatch)
    
     });
 
@@ -268,7 +275,7 @@ class Automatch extends Component {
                 </div>
             <Col md={16}>
               <Card
-                title="Auto Matching Offers"
+                title="Single Matching Offers"
                 content={
 
                   <BootstrapTable
@@ -278,6 +285,29 @@ class Automatch extends Component {
                     expandRow={true}
                     keyField='id'
                     data={this.state.automatch}
+                    columns={this.columns}
+                    filter={filterFactory()}
+                    // expandRow={this.expandRow}
+                   // expandComponent={this.expandComponent}
+                  />
+
+                }
+              />
+
+            </Col>
+
+            <Col md={16}>
+              <Card
+                title="Split Matching Offers"
+                content={
+
+                  <BootstrapTable
+                    striped
+                    hover
+                    pagination={paginationFactory()}
+                    expandRow={true}
+                    keyField='id'
+                    data={this.state.splitmatch}
                     columns={this.columns}
                     filter={filterFactory()}
                     // expandRow={this.expandRow}

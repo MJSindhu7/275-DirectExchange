@@ -88,7 +88,7 @@ class MyOfferPage extends Component {
         if (row.offerStatus == "Open") {
           return (
             <div className="btn-toolbar">
-              <Button bsStyle="success" fill type="submit" onClick={() => this.automatchmtd(row)}>
+              <Button bsStyle="success" fill type="submit" onClick={event => { event.preventDefault(); this.automatchmtd(row)}}>
                 AutoMatch
                       </Button>
               <Button bsStyle="info" fill type="submit" onClick={() => { this.setState({ rowval: row }); this.handleShow() }}>
@@ -114,6 +114,7 @@ class MyOfferPage extends Component {
       rowval: [],
       offers: [],
       automatch: [],
+      splitmatch:[],
       show: '',
       showautomatch: ''
     }
@@ -123,23 +124,31 @@ class MyOfferPage extends Component {
 		alert(msg);
 	  }
   automatchmtd = (rowval) => {
+    
+    //this.showAlert("automatch called"+rowval.id)
     console.log("before automatch called"+rowval.id)
-    DirectExchangeService.getAutomatchingoffers(rowval.id).then(res => {
-      this.setState({ automatch: res.data });  
-      console.log("automatch called"+this.state.automatch)
-      if(this.state.automatch.length>0){
+    
+    DirectExchangeService.getSingleAutomatchingoffers(rowval.id).then(res => {
+      // console.log("response data"+res.data )
+       this.setState({ automatch: res.data });  
+       console.log("automatch called"+JSON.stringify(this.state.automatch))
+       if(this.state.automatch.length>0){
+ 
+         this.props.history.push({
+           pathname: '/admin/automatch',
+           rowfrommyoffer: rowval 
+         })
+       }
+       else{
+         this.showAlert("No AutoMatching Offers Available, Right Now")
+         // this.props.history.push('admin/myoffers');
+         window.location.reload(false)
+       }
+     });
+    
+   
 
-        this.props.history.push({
-          pathname: '/admin/automatch',
-          rowfrommyoffer: rowval 
-        })
-      }
-      else{
-        this.showAlert("No AutoMatching Offers Available, Right Now")
-			  // this.props.history.push('admin/myoffers');
-			  window.location.reload(false)
-      }
-    });
+
   }
 
   deleteoffer = (id) => {

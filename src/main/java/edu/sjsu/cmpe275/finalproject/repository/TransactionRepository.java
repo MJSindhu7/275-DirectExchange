@@ -19,7 +19,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	    @Query("UPDATE Offers c SET c.offerStatus = :offerStatus WHERE c.id = :id")
 	    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
 	 
-	 final static String GET_INTransaction_Offers = "select * from Transaction e where :username IN(e.user_name,e.offer_accepter) and e.offer_status=:offer_status";
+	 final static String GET_INTransaction_Offers = "select * from Transaction e where e.offer_accepter=:username and e.offer_status=:offer_status";
 		
 	 @Query(value=GET_INTransaction_Offers, nativeQuery = true)
 	 List<Transaction> getInTransactionOffers(@Param("username") String username,@Param("offer_status") String offer_status);

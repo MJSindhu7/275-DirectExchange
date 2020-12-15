@@ -98,9 +98,14 @@ class DirectExchangeService {
     }&symbols=${to}`)
 
   }
-  getAutomatchingoffers(offerid) {
+  getSingleAutomatchingoffers(offerid) {
     console.log(offerid);
     return axios.get(AUTOMATCH_ + "/getSingleOffers/" + offerid);
+  }
+
+  getSplitAutomatchingoffers(offerid) {
+    console.log(offerid);
+    return axios.get(AUTOMATCH_ + "/getSplitOffers/" + offerid);
   }
   getTransactionHistory(username) {
     console.log(username);
