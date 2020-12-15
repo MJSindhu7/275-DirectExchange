@@ -67,6 +67,18 @@ public class Offers {
 	
 	@Column(name = "offer_status")
 	private String offerStatus;
+	
+	@Column(name = "offeraccepterid")
+	private long offeraccepterid;
+	
+	@Column(name = "split1accepterid")
+	private long split1accepterid;
+	
+	@Column(name = "split2accepterid")
+	private long split2accepterid;
+	
+	@Column(name = "split3accepterid")
+	private long split3accepterid;
 
 	public Long getId() {
 		return id;
@@ -188,6 +200,39 @@ public class Offers {
 
 	public void setOfferStatus(String offerStatus) {
 		this.offerStatus = offerStatus;
+	}
+
+	
+	public long getOfferaccepterid() {
+		return offeraccepterid;
+	}
+
+	public void setOfferaccepterid(long offeraccepterid) {
+		this.offeraccepterid = offeraccepterid;
+	}
+
+	public long getSplit1accepterid() {
+		return split1accepterid;
+	}
+
+	public void setSplit1accepterid(long split1accepterid) {
+		this.split1accepterid = split1accepterid;
+	}
+
+	public long getSplit2accepterid() {
+		return split2accepterid;
+	}
+
+	public void setSplit2accepterid(long split2accepterid) {
+		this.split2accepterid = split2accepterid;
+	}
+
+	public long getSplit3accepterid() {
+		return split3accepterid;
+	}
+
+	public void setSplit3accepterid(long split3accepterid) {
+		this.split3accepterid = split3accepterid;
 	}
 
 	@Override

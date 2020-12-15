@@ -54,15 +54,40 @@ public class PostExchangeOfferService {
 		}
 		
 		
-		public int updateStatus(Transaction trans,String status) {
+		public int updateMyStatus(Transaction trans,String status) {
 
 			try {
 
-				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getId());
+				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getMyofferid());
 				Offers _postOffer = null;
 				if (_offer.isPresent()) {
 					_postOffer = _offer.get();
 					_postOffer.setOfferStatus(status);
+					_postOffer.setOfferaccepterid(trans.getOthersofferid());
+					
+					postexchangeofferrepository.save(_postOffer);
+					 //offerservice.updateOfferStaatus(trans.getId(),status);
+					
+				}
+
+				return 0;
+			} catch (Exception e) {
+				System.err.println(e);
+				return 1;
+			}
+		}
+		
+		public int updateOthersStatus(Transaction trans,String status) {
+
+			try {
+
+				Optional<Offers> _offer = postexchangeofferrepository.findById(trans.getOthersofferid());
+				Offers _postOffer = null;
+				if (_offer.isPresent()) {
+					_postOffer = _offer.get();
+					_postOffer.setOfferStatus(status);
+					_postOffer.setOfferaccepterid(trans.getMyofferid());
+					
 					postexchangeofferrepository.save(_postOffer);
 					 //offerservice.updateOfferStaatus(trans.getId(),status);
 					

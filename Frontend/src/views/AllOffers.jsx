@@ -188,7 +188,14 @@ class AllOffers extends Component {
           }
           
          
-        }if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "countermade" & this.state.usersoffers.length>0) {
+        }
+        console.log("---")
+        console.log(row.user.userName)
+        console.log(row.offerStatus)
+        console.log(row.id)
+        console.log(this.state.othersofferid)
+        console.log("---"+row.offeraccepterid)
+        if (row.user.userName == localStorage.getItem("userId") & row.offerStatus == "Open") {
           return (
             <div className="btn-toolbar">
               <Button bsStyle="info" pullRight fill type="submit" onClick={() => { this.counterofferresponse("accepted") }}>
@@ -221,12 +228,14 @@ class AllOffers extends Component {
 
   settransactionval = (row) => {
    // e.preventDefault()
-    console.log(row)
+    console.log("row valye is---"+row.id)
+    this.setState({othersofferid:row.id})
     let transaction = {
-      id: row.id,
-      userName: row.user.userName,
-      nickName: row.user.nickName,
-      offerAccepter: localStorage.getItem("userId"),
+      myofferid: this.state.myofferid,
+      othersofferid:this.state.othersofferid,
+      userName: localStorage.getItem("userId"),
+      nickName: localStorage.getItem("nickName"),
+      offerAccepter:  row.user.userName,
       sourceCountry: row.sourceCountry,
       sourceCurrency: row.sourceCurrency,
       remitAmountSource: row.remitAmountSource,
@@ -245,9 +254,8 @@ class AllOffers extends Component {
 
       split_exchange_partie1: "",
       split_exchange_partie2: "",
-      split_exchange_partie3: ""
-
-
+      split_exchange_partie3: "",
+      myoffer:[]
     }
 
     console.log('transaction => ' + JSON.stringify(transaction));
@@ -258,10 +266,7 @@ class AllOffers extends Component {
     let userid = localStorage.getItem("userId")
     console.log("**offerAccepter" + this.state.offerAccepter)
     DirectExchangeService.exchangeaction(userid, action).then((res) => {
-      // this.setState({ offers: res.data });
-      // console.log("**" + this.state.offers)
       this.showAlert("Success -- Offer Accepted")
-      //this.props.history.push('/admin/alloffers');
     });
     this.setState({offerAccepter:localStorage.getItem("userId")})
   }
@@ -269,14 +274,29 @@ class AllOffers extends Component {
   showAlert(msg) {
 		alert(msg);
 	  }
-  counteroffer = (e) => {
-    e.preventDefault()
-    let transaction = this.settransactionval(this.state.rowval)
-    DirectExchangeService.counterOffer(transaction).then((res) => {
-      // this.setState({ offers: res.data });
-      // console.log("**" + this.state.offers)
-      console.log("**" + res.data)
+  counteroffer = () => {
+    let flag=0;
+    DirectExchangeService.getSingleAutomatchingoffers(this.state.rowval.id).then((res) => {
+      this.setState({ myoffer: res.data });
+      if (this.state.myoffer.length > 0) {
+       
+        this.state.myoffer.map(img => {
+          console.log("iddddddddddd"+img.id)
+          this.setState({ myofferid: img.id})
+          flag=1
+        });
+
+        if(flag==1){
+          let transaction = this.settransactionval(this.state.rowval)
+          DirectExchangeService.counterOffer(transaction).then((res) => {
+             this.setState({ offers: res.data });
+             console.log("**" + this.state.offers)
+            console.log("**" + res.data)
+          });
+        }
+      }
     });
+    
  
   }
 
@@ -288,6 +308,8 @@ class AllOffers extends Component {
       offers: [],
       rowval: [],
       usersoffers:[],
+      myofferid:'',
+      othersofferid:'',
       newremitAmount: '0.00'
     }
 

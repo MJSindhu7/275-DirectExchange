@@ -61,7 +61,7 @@ public class TransactionService {
 			offerstatus = "InTransaction";
 			//trans.setOfferStatus(offerstatus);
 			//transrepo.save(trans);
-			offerservice.updateStatus(trans, offerstatus);
+			//offerservice.updateStatus(trans, offerstatus);
 			enterInTransactionMode(trans, "Expired");
 		}
 
@@ -82,7 +82,7 @@ public class TransactionService {
 
 			offerstatus = "countermade";
 			// transrepo.save(trans);
-			offerservice.updateStatus(trans, "countermade");
+			offerservice.updateMyStatus(trans, "countermade");
 
 			stoploop = true;
 		}
@@ -91,9 +91,7 @@ public class TransactionService {
 
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && stoploop) {
 
-			System.out.println(getDecision() + "--" + getUsername() + "--" + trans.getUserName());
-
-			if (getUsername().equalsIgnoreCase(trans.getUserName()) && getDecision().equalsIgnoreCase("accepted")) {
+			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter()) && getDecision().equalsIgnoreCase("accepted")) {
 				counterofferaccepted = true;
 				stoploop = false;
 			}
@@ -105,12 +103,13 @@ public class TransactionService {
 			offerstatus = "Open";
 			trans.setOfferStatus(offerstatus);
 			transrepo.save(trans);
-			offerservice.updateStatus(trans, offerstatus);
+			offerservice.updateMyStatus(trans, offerstatus);
 
 		} else {
 
 			offerstatus = "InTransaction";
-			offerservice.updateStatus(trans, offerstatus);
+			offerservice.updateMyStatus(trans, offerstatus);
+			offerservice.updateOthersStatus(trans, offerstatus);
 			enterInTransactionMode(trans, "Open");
 		}
 	}
@@ -141,7 +140,7 @@ public class TransactionService {
 		trans.setTimestamp(dt);
 		transrepo.save(trans);
 		while (System.currentTimeMillis() < startTime + maxDurationInMilliseconds && fetchbankbalance) {
-			System.out.println("Username---"+getUsername()+"----accepter"+trans.getOfferAccepter()+"-----"+trans.getUserName()+"--"+getDecision());
+			
 			if (getUsername().equalsIgnoreCase(trans.getOfferAccepter())
 					&& getDecision().equalsIgnoreCase("transfered")) {
 				offeraccepter = true;
@@ -171,7 +170,8 @@ public class TransactionService {
 
 				trans.setOfferStatus(offerstatus);
 				transrepo.save(trans);
-				offerservice.updateStatus(trans, offerstatus);
+				offerservice.updateMyStatus(trans, offerstatus);
+				offerservice.updateOthersStatus(trans, offerstatus);
 				fetchbankbalance = false;
 				transactiondone = true;
 				offerstatus="";
@@ -191,7 +191,8 @@ public class TransactionService {
 		if (transactiondone == false) {
 			offerstatus = ifnotransaction;
 			trans.setOfferStatus(offerstatus);
-			offerservice.updateStatus(trans, offerstatus);
+			offerservice.updateMyStatus(trans, offerstatus);
+			offerservice.updateOthersStatus(trans, offerstatus);
 			transrepo.save(trans);
 
 		}
