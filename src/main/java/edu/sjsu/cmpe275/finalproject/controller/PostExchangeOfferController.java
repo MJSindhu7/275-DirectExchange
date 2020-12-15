@@ -122,4 +122,70 @@ public class PostExchangeOfferController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	////Filters for offers
+	@GetMapping("/getActiveOffers/{offerStatus}")
+	public ResponseEntity<Optional<Offers>> getActiveOffers(
+			@PathVariable(required = true, name = "offerStatus") String offerStatus) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.filterActiveOffers(offerStatus);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+	}
+
+	@GetMapping("/filterOffersSourceCurrency/{sourceCurrency}")
+	public ResponseEntity<Optional<Offers>> getSourceCurrencyOffers(
+			@PathVariable(required = true, name = "sourceCurrency") String sourceCurrency) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.filterOffersBySourceCurrency(sourceCurrency);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+	}
+
+	@GetMapping("/filterOffersSourceAmount/{sourceAmount}")
+	public ResponseEntity<Optional<Offers>> getSourceAmountOffers(
+			@PathVariable(required = true, name = "sourceAmount") String sourceAmount) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.filterOffersByRemitAmountSource(sourceCurrency);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+	}
+
+	@GetMapping("/filterOffersDestinationCurrency/{destinationCurrency}")
+	public ResponseEntity<Optional<Offers>> getDestinationCurrencyOffers(
+			@PathVariable(required = true, name = "destinationCurrency") String destinationCurrency) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.filterOffersByDestinationCurrency(destinationCurrency);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+	}
+
+	@GetMapping("/filterOffersDestinationAmount/{destinationAmount}")
+	public ResponseEntity<Optional<Offers>> getDestinationAmountOffers(
+			@PathVariable(required = true, name = "destinationAmount") String destinationAmount) {
+		Optional<Offers> postExchangeOffer = null;
+		try {
+			postExchangeOffer = postOfferService.filterOffersRemitAmountDestination(destinationAmount);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Optional<Offers>>(postExchangeOffer, HttpStatus.OK);
+	}
 }

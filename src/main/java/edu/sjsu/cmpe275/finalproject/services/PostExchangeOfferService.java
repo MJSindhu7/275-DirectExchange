@@ -75,6 +75,29 @@ public class PostExchangeOfferService {
 			}
 		}
 		
-		
-		
+		//Filters for offers
+		public List<Offers> filterActiveOffers(String offer_status) {
+			List<Offers> activeOffers = postexchangeofferrepository.getActiveOffers(offer_status);
+			return activeOffers;
+		}
+
+		public List<Offers> filterOffersBySourceCurrency(String source_currency) {
+			List<Offers> sourceCurrencyOffers = postexchangeofferrepository.getOffersSourceCurrency(source_currency);
+			return sourceCurrencyOffers;
+		}
+
+		public List<Offers> filterOffersByRemitAmountSource(String remit_amount_source) {
+			List<Offers> sourceAmountOffers = postexchangeofferrepository.getOffersRemitAmountSource(remit_amount_source);
+			return sourceAmountOffers;
+		}
+
+		public List<Offers> filterOffersByDestinationCurrency(String destination_currency) {
+			List<Offers> destinationCurrencyOffers = postexchangeofferrepository.getOffersDestinationCurrency(destination_currency);
+			return destinationCurrencyOffers;
+		}
+
+		public List<Offers> filterOffersRemitAmountDestination(String remit_amount_destination) {
+			List<Offers> destinationAmountOffers = postexchangeofferrepository.getOffersRemitAmountDestination(remit_amount_source);
+			return destinationAmountOffers;
+		}
 	}
