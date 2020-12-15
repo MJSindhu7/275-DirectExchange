@@ -24,6 +24,8 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();
 
+let REACT_APP_CONFIRMATION_EMAIL_REDIRECT = "http://localhost:3000/login";
+
 const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
   facebookProvider: new firebase.auth.FacebookAuthProvider(),
@@ -65,6 +67,11 @@ class Login extends Component {
       signInShow: true,
     });
   };
+
+  /* doSendEmailVerification = () =>
+    this.auth.currentUser.sendEmailVerification({
+      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+    });*/
 
   signUp = () => {
     console.log(this.state.signUpEmail);
@@ -133,7 +140,13 @@ class Login extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then(async (user) => {
+      .then(async (authUser) => {
+        //console.log("FFFFFFFF");
+        //console.log(authUser.user.emailVerified);
+        if (!authUser.user.emailVerified) {
+          alert("Email not verified");
+          return;
+        }
         this.setState({
           signInShow: false,
         });
