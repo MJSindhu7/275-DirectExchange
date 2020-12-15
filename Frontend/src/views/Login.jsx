@@ -141,8 +141,8 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(async (authUser) => {
-        //console.log("FFFFFFFF");
-        //console.log(authUser.user.emailVerified);
+        console.log("FFFFFFFF");
+        console.log(authUser.user.emailVerified);
         if (!authUser.user.emailVerified) {
           alert("Email not verified");
           return;

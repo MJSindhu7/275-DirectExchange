@@ -142,11 +142,15 @@ public class AutoMatchingController {
 														splitMatchOffers.add(arr);
 													}
 													else {
-														for(Offers[] exists:splitMatchOffers) {
+														Boolean dups = false;
+														for(Offers[] exists : splitMatchOffers) {
 															Boolean cond = exists[1].equals(arr[0]) && exists[0].equals(arr[1]);
-															if(!cond){
-																splitMatchOffers.add(arr);
+															if(cond){
+																dups = true;
 															}
+														}
+														if (!dups) {
+															splitMatchOffers.add(arr);
 														}
 													}
 												}

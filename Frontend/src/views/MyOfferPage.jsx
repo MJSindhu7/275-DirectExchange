@@ -122,34 +122,40 @@ class MyOfferPage extends Component {
 
   showAlert(msg) {
 		alert(msg);
-	  }
+    }
+    
   automatchmtd = (rowval) => {
     
     //this.showAlert("automatch called"+rowval.id)
     console.log("before automatch called"+rowval.id)
     
+    
     DirectExchangeService.getSingleAutomatchingoffers(rowval.id).then(res => {
-      // console.log("response data"+res.data )
+      //  console.log("Single offer response data"+JSON.stringify(res.data) )
        this.setState({ automatch: res.data });  
-       console.log("automatch called"+JSON.stringify(this.state.automatch))
-       if(this.state.automatch.length>0){
- 
+       console.log("automatch called"+JSON.stringify(this.state.automatch)+" length is :" +this.state.automatch.length )
+
+       DirectExchangeService.getSplitAutomatchingoffers(rowval.id).then(res => {
+      //  console.log("Split offer response data"+JSON.stringify(res.data) )
+       this.setState({ splitmatch: res.data });  
+       console.log("splitmatch called"+JSON.stringify(this.state.splitmatch)+" length is :" +this.state.splitmatch.length)
+
+      console.log("splitmatch length is :" +this.state.splitmatch.length + " and automatch length is :" +this.state.automatch.length)
+       if(this.state.automatch.length>0 || this.state.splitmatch.length>0 ){
+         this.showAlert("Automatching offers found, redirecting now")
          this.props.history.push({
            pathname: '/admin/automatch',
            rowfrommyoffer: rowval 
          })
        }
        else{
-         this.showAlert("No AutoMatching Offers Available, Right Now")
-         // this.props.history.push('admin/myoffers');
-         window.location.reload(false)
+         this.showAlert("No Automatching offers found for this offer")
+         window.location.reload(false)         
        }
-     });
-    
-   
-
-
+     });      
+    });
   }
+
 
   deleteoffer = (id) => {
     DirectExchangeService.deleteOffer(id).then(res => {
