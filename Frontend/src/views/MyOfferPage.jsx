@@ -164,6 +164,8 @@ class MyOfferPage extends Component {
               pathname: "/admin/automatch",
               rowfrommyoffer: rowval,
             });
+          } else {
+            alert("Currently no automatch offers available");
           }
         }
       );
