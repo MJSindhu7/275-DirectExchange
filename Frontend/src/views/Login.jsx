@@ -89,7 +89,7 @@ class Login extends Component {
             let userSignUp = {
               userName: this.state.signUpEmail,
               nickName: this.state.nickname,
-              rating: 0,
+              rating: "N/A",
             };
             //localStorage.setItem("userId", this.state.signUpEmail);
             try {
