@@ -42,6 +42,7 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 	@GetMapping("/getuserNickname/{user_name}")
 	public ResponseEntity<String> getUserNickname(@PathVariable(required = true, name = "user_name") String user_name)  {
 
@@ -62,7 +63,20 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/updaterRating/{user_name}")
+	@PostMapping("/updateNickName")
+	public ResponseEntity<String> updateUserNickname(@RequestBody User user)  {
+		try {
+			String user_name = user.getUserName();
+			String nick_name = user.getNickName();
+			userService.updateUserName(user_name, nick_name);	
+		return new ResponseEntity<>(HttpStatus.OK);
+		}catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/updaterRating/{user_name}")
 	public ResponseEntity<String> updateUserRating(@PathVariable(required = true, name = "user_name") String user_name)  {
 		
 		List<Transaction> allTransactionbythisUser = null;

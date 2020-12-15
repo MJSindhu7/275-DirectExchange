@@ -114,7 +114,12 @@ class DirectExchangeService {
 
   updateUserRating(username) {
     console.log(username);
-    return axios.get(DIRECT_EXCHANGE_Users_URL + "/updaterRating/" + username);
+    return axios.post(DIRECT_EXCHANGE_Users_URL + "/updaterRating/" + username);
+  }
+
+  updateNickName(user) {
+    console.log(user);
+    return axios.post(DIRECT_EXCHANGE_Users_URL + "/updateNickName", user);
   }
 }
 

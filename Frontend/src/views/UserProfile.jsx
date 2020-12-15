@@ -1,157 +1,111 @@
-
 import React, { Component } from "react";
 import {
   Grid,
   Row,
   Col,
   FormGroup,
-  ControlLabel,
-  FormControl
-} from "react-bootstrap";
+ } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import DirectExchangeService from "../services/DirectExchangeService";
+
 
 import avatar from "assets/img/faces/face-3.jpg";
 
 class UserProfile extends Component {
+ 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      // step 2
+      userName: localStorage.getItem("userId"),
+      nickName : localStorage.getItem("nickName"),
+    };
+  }
+
+  updateNickName = (e) => {
+    e.preventDefault();
+    let user = {
+       userName: localStorage.getItem("userId"),
+       nickName: this.state.nickName,
+       rating : 'N/A',
+    };
+    console.log("Updated Nick Name : " + JSON.stringify(user));
+
+    DirectExchangeService.updateNickName(user).then((res) => {
+    this.showAlert("Nick Name Updated");
+      //this.props.history.push('/admin/bankaccount');
+      localStorage.setItem("nickName",this.state.nickName)
+    window.location.reload(false);
+    });
+  };
+
+    cancel(e) {
+    e.preventDefault();
+    this.showAlert("Canceled");
+    window.location.reload(false);
+  }
+
+  showAlert(msg) {
+    alert(msg);
+  }
+
+
   render() {
     return (
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col md={8}>
+            <Col md={10}>
               <Card
                 title="Edit Profile"
                 content={
                   <form>
                     <FormInputs
-                      ncols={["col-md-5", "col-md-3", "col-md-4"]}
+                      ncols={["col-md-5", "col-md-5"]}
                       properties={[
-                        {
-                          label: "Company (disabled)",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Company",
-                          defaultValue: "Creative Code Inc.",
-                          disabled: true
-                        },
                         {
                           label: "Username",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Username",
-                          defaultValue: "michael23"
+                          placeholder: "User Name",
+                          value: localStorage.getItem("userId"),
                         },
                         {
-                          label: "Email address",
-                          type: "email",
+                          label: "Nickname",
+                          type: "text",
                           bsClass: "form-control",
-                          placeholder: "Email"
+                          placeholder: "Nick Name",
+                          value: this.state.nickName,
+                          onChange: (e) =>
+                            this.setState({ nickName: e.target.value }),
                         }
                       ]}
                     />
-                    <FormInputs
-                      ncols={["col-md-6", "col-md-6"]}
-                      properties={[
-                        {
-                          label: "First name",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "First name",
-                          defaultValue: "Mike"
-                        },
-                        {
-                          label: "Last name",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Last name",
-                          defaultValue: "Andrew"
-                        }
-                      ]}
-                    />
-                    <FormInputs
-                      ncols={["col-md-12"]}
-                      properties={[
-                        {
-                          label: "Adress",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Home Adress",
-                          defaultValue:
-                            "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                        }
-                      ]}
-                    />
-                    <FormInputs
-                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
-                      properties={[
-                        {
-                          label: "City",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "City",
-                          defaultValue: "Mike"
-                        },
-                        {
-                          label: "Country",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Country",
-                          defaultValue: "Andrew"
-                        },
-                        {
-                          label: "Postal Code",
-                          type: "number",
-                          bsClass: "form-control",
-                          placeholder: "ZIP Code"
-                        }
-                      ]}
-                    />
-
-                    <Row>
-                      <Col md={12}>
-                        <FormGroup controlId="formControlsTextarea">
-                          <ControlLabel>About Me</ControlLabel>
-                          <FormControl
-                            rows="5"
-                            componentClass="textarea"
-                            bsClass="form-control"
-                            placeholder=""
-                            defaultValue="User..."
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Button bsStyle="info" pullRight fill type="submit">
-                      Update Profile
-                    </Button>
+                    <div className="btn-toolbar">
+                      <Button
+                        bsStyle="info"
+                        fill
+                        type="submit"
+                        onClick={this.updateNickName}
+                      >
+                        Update Details
+                      </Button>
+                      <Button
+                        bsStyle="danger"
+                        fill
+                        type="submit"
+                        onClick={this.cancel.bind(this)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                     <div className="clearfix" />
                   </form>
-                }
-              />
-            </Col>
-            <Col md={4}>
-              <UserCard
-                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
-                avatar={avatar}
-                name="Mike Andrew"
-                userName="michael24"
-                
-                socials={
-                  <div>
-                    <Button simple>
-                      <i className="fa fa-facebook-square" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-twitter" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-google-plus-square" />
-                    </Button>
-                  </div>
                 }
               />
             </Col>

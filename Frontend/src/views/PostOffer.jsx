@@ -110,16 +110,6 @@ class PostOffer extends Component {
       errors["expirationDate"] = "Cannot be empty";
     }
 
-    if (!fields["counteroffers"]) {
-      formIsValid = false;
-      errors["counteroffers"] = "Cannot be empty";
-    }
-
-    if (!fields["customOffer"]) {
-      formIsValid = false;
-      errors["customOffer"] = "Cannot be empty";
-    }
-
     if (!fields["offerStatus"]) {
       formIsValid = false;
       errors["offerStatus"] = "Cannot be empty";
@@ -381,8 +371,8 @@ class PostOffer extends Component {
                             onBlur: (e) =>
                               this.setState({
                                 remitAmountDestination:
-                                  this.state.exchangeRate *
-                                  this.state.remitAmountSource,
+                                  (this.state.exchangeRate *
+                                  this.state.remitAmountSource).toFixed(2),
                               }),
                           },
                           {

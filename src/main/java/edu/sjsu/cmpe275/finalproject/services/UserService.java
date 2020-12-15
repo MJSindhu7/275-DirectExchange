@@ -42,4 +42,9 @@ public class UserService {
 		userRepository.updateUserRating(user_name, rating);
 	}
 
+	public void updateUserName(String user_name, String nick_name) {
+		userRepository.updateUserName(user_name, nick_name);
+		
+	}
+
 }

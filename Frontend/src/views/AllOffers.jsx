@@ -318,7 +318,7 @@ class AllOffers extends Component {
   componentDidMount() {
     DirectExchangeService.listAllExchangeOffer().then((res) => {
       this.setState({ offers: res.data });
-      console.log("**" + this.state.offers)
+      console.log("**" + JSON.stringify(this.state.offers))
     });
   
   }
