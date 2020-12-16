@@ -89,6 +89,10 @@ class BankAccountSetup extends Component {
   // step 3
   componentDidMount() {
     //e.preventDefault()
+    if (!localStorage.getItem("userId")) {
+      this.props.history.push("/login");
+      alert("Please log in");
+    }
     console.log("username is" + localStorage.getItem("userId"));
     DirectExchangeService.getBankAccountsByUser(
       localStorage.getItem("userId")

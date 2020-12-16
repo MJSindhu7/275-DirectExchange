@@ -47,6 +47,10 @@ class PostOffer extends Component {
   }
 
   componentDidMount() {
+    if (!localStorage.getItem("userId")) {
+      this.props.history.push("/login");
+      alert("Please log in");
+    }
     //e.preventDefault()
     DirectExchangeService.getBankAccountsByUser(
       localStorage.getItem("userId")
@@ -370,9 +374,10 @@ class PostOffer extends Component {
                               }),
                             onBlur: (e) =>
                               this.setState({
-                                remitAmountDestination:
-                                  (this.state.exchangeRate *
-                                  this.state.remitAmountSource).toFixed(2),
+                                remitAmountDestination: (
+                                  this.state.exchangeRate *
+                                  this.state.remitAmountSource
+                                ).toFixed(2),
                               }),
                           },
                           {
