@@ -159,7 +159,10 @@ class AllOffers extends Component {
                   bsStyle="info"
                   fill
                   type="submit"
-                  onClick={this.onsplitoffer}
+                  onClick={() => {
+                    this.redirectToMyOffers();
+                  }
+                }
                 >
                   Split
                 </Button>
@@ -222,7 +225,10 @@ class AllOffers extends Component {
                   bsStyle="info"
                   fill
                   type="submit"
-                  onClick={this.onsplitoffer}
+                  onClick={() => {
+                    this.redirectToMyOffers();
+                  }
+                }
                 >
                   Split
                 </Button>
@@ -279,6 +285,11 @@ class AllOffers extends Component {
       },
     },
   ];
+
+  redirectToMyOffers(){
+     this.showAlert("Split Match is done by Automatching, please use from there");
+     this.props.history.push('/admin/myoffers');
+  }
 
   directacceptoffer = (row) => {
     // e.preventDefault()
