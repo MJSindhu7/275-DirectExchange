@@ -16,15 +16,15 @@ import edu.sjsu.cmpe275.finalproject.model.Transaction;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
 	 @Modifying(clearAutomatically = true)
-	    @Query("UPDATE Offers c SET c.offerStatus = :offerStatus WHERE c.id = :id")
-	    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
+    @Query(value="update offers c set c.offerStatus = :offerStatus where c.id = :id", nativeQuery = true)
+    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
 	 
-	 final static String GET_INTransaction_Offers = "select * from Transaction e where :username IN(e.user_name,e.offer_accepter) and e.offer_status=:offer_status";
+	 final static String GET_INTransaction_Offers = "select * from transaction e where :username in(e.user_name,e.offer_accepter) and e.offer_status=:offer_status";
 		
 	 @Query(value=GET_INTransaction_Offers, nativeQuery = true)
 	 List<Transaction> getInTransactionOffers(@Param("username") String username,@Param("offer_status") String offer_status);
 
-	 final static String GET_INTransaction_history = "select * from Transaction e where :username IN(e.user_name,e.offer_accepter)";
+	 final static String GET_INTransaction_history = "select * from transaction e where :username in(e.user_name,e.offer_accepter)";
 	@Query(value=GET_INTransaction_history, nativeQuery = true)
 	 List<Transaction> getInTransactionHistory(String username);
 	

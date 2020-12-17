@@ -174,6 +174,7 @@ class AllOffers extends Component {
                   onClick={(event) => {
                     event.preventDefault();
                     this.directacceptoffer(row);
+                    this.showAlert("Offer Accepted, sending Notifications");
                   }}
                 >
                   Accept
@@ -189,6 +190,7 @@ class AllOffers extends Component {
                   type="submit"
                   onClick={() => {
                     this.directacceptoffer(row);
+                    this.showAlert("Offer Accepted, sending Notifications");
                   }}
                 >
                   Accept Offer
@@ -217,6 +219,7 @@ class AllOffers extends Component {
                   type="submit"
                   onClick={() => {
                     this.directacceptoffer(row);
+                    this.showAlert("Offer Accepted, sending Notifications");
                   }}
                 >
                   Accept Offer
@@ -244,6 +247,7 @@ class AllOffers extends Component {
                   type="submit"
                   onClick={() => {
                     this.directacceptoffer(row);
+                    this.showAlert("Offer Accepted, sending Notifications");
                   }}
                 >
                   Accept Offer

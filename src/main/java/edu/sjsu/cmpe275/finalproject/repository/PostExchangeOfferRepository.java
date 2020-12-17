@@ -18,16 +18,16 @@ public interface PostExchangeOfferRepository extends JpaRepository<Offers, Long>
 //	@Query(value="select * from Offers e where e.user_name=:user_name", nativeQuery = true)
 //	List<Offers> findAllOffers(@Param("user_name") String userName);
 	
-	final static String GET_OFFERS_QUERY = "select * from Offers e where e.user_name=:user_name order by field(offer_status,\"Open\",\"CounterMade\",\"InTransaction\",\"Fulfilled\",\"Expired\")";
+	final static String GET_OFFERS_QUERY = "select * from offers e where e.user_name=:user_name order by field(offer_status,\"Open\",\"CounterMade\",\"InTransaction\",\"Fulfilled\",\"Expired\")";
 	
 	 @Query(value=GET_OFFERS_QUERY, nativeQuery = true)
 	 List<Offers> getMyOffers(@Param("user_name") String user_name);
 	 
 	 @Modifying(clearAutomatically = true)
-	    @Query("UPDATE Offers c SET c.offerStatus = :offerStatus WHERE c.id = :id")
+	    @Query(value="update offers c set c.offerStatus = :offerStatus where c.id = :id", nativeQuery = true)
 	    int updateOfferStaatus(@Param("id") Long id, @Param("offerStatus") String offerStatus);
 	 
-	 final static String GET_Open_Offers = "select * from Offers e where e.user_name=:user_name and e.offer_status=:offer_status";
+	 final static String GET_Open_Offers = "select * from offers e where e.user_name=:user_name and e.offer_status=:offer_status";
 	 @Query(value=GET_Open_Offers, nativeQuery = true)
 	 List<Offers> getOpenOffers(@Param("user_name") String username,@Param("offer_status") String offer_status);
 

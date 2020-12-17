@@ -237,6 +237,12 @@ class Automatch extends Component {
     this.setState({
       show: false,
     });
+  };
+
+  handleUpdate = (e) => {
+    this.setState({
+      show: false,
+    });
     this.counteroffer(e);
   };
 
@@ -440,6 +446,9 @@ class Automatch extends Component {
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
+                  <Button variant="secondary" onClick={this.handleUpdate}>
+                    Update
+                  </Button>
                   <Button variant="secondary" onClick={this.handleClose}>
                     Close
                   </Button>
